@@ -6,8 +6,7 @@ class StudentController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
-        private $student;
+	public $layout='//layouts/column1';
 
 	/**
 	 * @return array action filters
@@ -177,7 +176,7 @@ class StudentController extends Controller
 
                 case 4:
                     if (isset($student)) {
-                    $firephp->log($student->nextOfKin);
+                        $firephp->log($student->nextOfKin);
                         if (is_null($student->nextOfKin)) 
                             $student->nextOfKin = new NextOfKin;
                         // Check if this is a postback
@@ -214,8 +213,12 @@ class StudentController extends Controller
                         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             if (isset($_POST['projectId'])) {
                                 $student->projects = Project::model()->findAllByPk($_POST['projectId']);
+                                if (isset($_POST['Project'])) {
+                                    // Save the isPR and supportStatement to SESSION
+                                    $_SESSION['Project'] = $_POST['Project'];
+                                }
                                 $this->redirect(array('apply','step' => isset($_POST['btnBack']) ? $step-1 : $step+1));
-                            }
+                            } else $student->projects = array();
                         }
                         
                         $selectedProjects = array();
@@ -233,19 +236,39 @@ class StudentController extends Controller
                     break;
                 
                 case 6:
+                    $firephp->log($_SESSION['Project']);
                     if (isset($student)) {
                         // Check if this is a postback
                         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                            if (isset($_POST['btnBack'])) {
+                                $this->redirect(array('apply','step' => 5));
+                            }
                             if (isset($_POST['save'])) {
-                                if ($student->save()){
+                                if ($isOK = $student->save()){
+                                    if (isset($_SESSION['Project']) && is_array($_SESSION['Project'])) {
+                                        // Retrieve the student applications just entered to database
+                                        $studentApps = StudentApplication::model()->findAllByAttributes(array('studentId'=>$student->id));
+                                        foreach ($studentApps as $studentApp) {
+                                            if (isset($_SESSION['Project'][$studentApp->projectId]) && is_array($_SESSION['Project'][$studentApp->projectId])) {
+                                                // Insert isPR and support statments to studentapplication records
+                                                foreach ($_SESSION['Project'][$studentApp->projectId] as $attr=>$value) {
+                                                     $studentApp->$attr = $value;
+                                                }
+                                                $isOK = $isOK && $studentApp->save();
+                                            }
+                                        }
+                                    }
+                                } 
+                                if ($isOK) {
                                     echo 'Your application has been submitted';
-                                } else 
+                                    unset($_SESSION['Student'], $_SESSION['Project']);
+                                } else {
                                     echo "Some error occured. Your application cannot be saved to database";
+                                }
                                 Yii::app()->end();
                             }
                         }
                         
-                        $firephp->log($student->medicalInfo);
                         $this->render('apply',array(
                             'student'=>$student,
                             'step'=>6,
@@ -361,11 +384,4 @@ class StudentController extends Controller
 			Yii::app()->end();
 		}
 	}
-        
-        public function actionTest() {
-            $student = Student::model()->with('nextOfKin','familyMembers')->findByPk(42);
-            //var_dump($student);
-            var_dump($student->nextOfKin);
-            var_dump($student->familyMembers);
-        }
 }

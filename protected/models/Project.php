@@ -38,10 +38,14 @@ class Project extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('title, description','filter','filter'=>'trim'),
 			array('title, description, startDate, endDate, teamSize, deadline', 'required'),
+                        array('teamSize', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>100),
 			array('description', 'length', 'max'=>500),
 			array('locationId, teamSize', 'length', 'max'=>10),
+                        array('deadline','checkBeforeDate','largerDate'=>'startDate'),
+                        array('startDate','checkBeforeDate','largerDate'=>'endDate'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, title, description, locationId, startDate, endDate, teamSize, deadline, created, modified', 'safe', 'on'=>'search'),
@@ -135,6 +139,23 @@ class Project extends CActiveRecord
             $this->modified = NULL;
             if ($this->isNewRecord) 
                 $this->created = NULL;
-            return true;
+            $isOK = true;
+            if (empty($this->locationId)) {
+                $isOK = false;
+            }
+            return $isOK;
+        }
+        
+        /**
+         * 
+         * @param string $attribute
+         * @param array $params
+         */
+        public function checkBeforeDate($attribute,$params) {
+            if (!empty($this->$params['largerDate'])) {
+                if (strtotime($this->$attribute) >= strtotime($this->$params['largerDate'])) {
+                    $this->addError($attribute, $attribute . ' must be before ' . $params['largerDate']);
+                }
+            }
         }
 }

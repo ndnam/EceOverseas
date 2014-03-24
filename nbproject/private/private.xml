@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/student/_view.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/admin/index.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/student/index.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/AdminController.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/StudentController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/models/Staff.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/ProjectController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/staff/create.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/project/create.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/StaffController.php</file>
         </group>
     </open-files>
 </project-private>

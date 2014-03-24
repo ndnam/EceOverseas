@@ -35,13 +35,15 @@ class Staff extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, initial, fullName, email, phone, created, modified', 'required'),
+			array('username, password, initial, fullName, email, phone', 'required'),
 			array('username', 'length', 'max'=>64),
 			array('password', 'length', 'max'=>128),
 			array('initial', 'length', 'max'=>10),
 			array('fullName', 'length', 'max'=>100),
 			array('email', 'length', 'max'=>50),
 			array('phone', 'length', 'max'=>20),
+			array('email', 'email'),
+			array('phone', 'numerical','integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, username, password, initial, fullName, email, phone, created, modified', 'safe', 'on'=>'search'),
@@ -127,5 +129,16 @@ class Staff extends CActiveRecord
             if ($this->isNewRecord) 
                 $this->created = NULL;
             return true;
+        }
+        
+        public static function getStaffList() {
+            $criteria = new CDbCriteria;
+            $criteria->select = "id, fullName";
+            $staffs = Staff::model()->findAll($criteria);
+            $staffArray = array('Select staff');
+            foreach ($staffs as $staff) {
+                $staffArray[$staff->id] = $staff->fullName;
+            }
+            return $staffArray;
         }
 }

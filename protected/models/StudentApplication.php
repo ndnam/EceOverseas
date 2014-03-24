@@ -35,7 +35,7 @@ class StudentApplication extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('studentId, projectId, created, modified', 'required'),
+			array('studentId, projectId', 'required'),
 			array('usingPsea, status', 'numerical', 'integerOnly'=>true),
 			array('studentId, projectId', 'length', 'max'=>10),
 			array('support', 'length', 'max'=>500),
@@ -124,4 +124,5 @@ class StudentApplication extends CActiveRecord
                 $this->created = NULL;
             return true;
         }
+        
 }

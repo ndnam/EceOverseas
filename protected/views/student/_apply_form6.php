@@ -22,5 +22,6 @@
 
 <form action="" method="POST">
     <input type="hidden" name="save" value="1">
+        <input type="submit" value="Back" name="btnBack" id="btnBack" step="6">
     <?= CHtml::submitButton('Finish') ?>
 </form>

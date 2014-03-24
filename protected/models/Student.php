@@ -292,4 +292,8 @@ class Student extends CActiveRecord
                 $this->created = NULL;
             return true;
         }
+        
+        public function getFullName() {
+            return $this->firstName . ' ' . $this->familyName;
+        }
 }

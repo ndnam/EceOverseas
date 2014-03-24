@@ -13,12 +13,13 @@
 class Dictionary extends CActiveRecord
 {
         const TYPE_BOOLEAN = 1;
-        const TYPE_STATUS = 2;
-        const TYPE_ROLE = 3;
+        const TYPE_APPLICATION_STATUS = 2;
+        const TYPE_STAFF_ROLE = 3;
         const TYPE_SWIMMING_ABILITY = 4;
         const TYPE_TSHIRT_SIZE = 5;
         const TYPE_BLOOD_GROUP = 6;
         const TYPE_HOUSING_TYPE = 7;
+        const TYPE_PROJECT_STATUS = 8;
         
 	/**
 	 * @return string the associated database table name

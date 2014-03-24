@@ -32,7 +32,7 @@ class Location extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, city, country, created, modified', 'required'),
+			array('name, city, country', 'required'),
 			array('name', 'length', 'max'=>100),
 			array('city, country', 'length', 'max'=>50),
 			// The following rule is used by search().
@@ -40,6 +40,11 @@ class Location extends CActiveRecord
 			array('id, name, city, country, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
+        
+        public function behaviors() {
+              return array( 'EAdvancedArBehavior' => array(
+                    'class' => 'application.extensions.EAdvancedArBehavior'));
+        }
 
 	/**
 	 * @return array relational rules.
@@ -60,7 +65,7 @@ class Location extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
+			'name' => 'Location Name',
 			'city' => 'City',
 			'country' => 'Country',
 			'created' => 'Created',
@@ -114,5 +119,19 @@ class Location extends CActiveRecord
             if ($this->isNewRecord) 
                 $this->created = NULL;
             return true;
+        }
+        
+        /**
+         * return an array of locations
+         */
+        public static function loadLocations() {
+            $criteria = new CDbCriteria;
+            $criteria->select = 't.id, t.name';
+            $locations = self::model()->findAll($criteria);
+            $locationList = array();
+            foreach ($locations as $location) {
+                $locationList[$location->id] = $location->name;
+            }
+            return $locationList;
         }
 }

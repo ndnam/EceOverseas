@@ -33,7 +33,7 @@ class ProjectStaff extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('projectId, staffId, created, modified', 'required'),
+			array('projectId, staffId', 'required'),
 			array('projectId, staffId', 'length', 'max'=>10),
 			array('role', 'length', 'max'=>30),
 			// The following rule is used by search().
@@ -115,6 +115,9 @@ class ProjectStaff extends CActiveRecord
             $this->modified = NULL;
             if ($this->isNewRecord) 
                 $this->created = NULL;
+            if (count(ProjectStaff::model()->findAllByAttributes(array('projectId'=>$this->projectId,'staffId'=>$this->staffId))) > 0) {
+                throw new CDbException('Record already existed in table');
+            }
             return true;
         }
 }

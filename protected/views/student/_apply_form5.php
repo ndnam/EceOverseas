@@ -15,7 +15,7 @@
 )); ?>
     <table>
         <tr>
-            <th>Select</th>
+            <th></th>
             <th>Title</th>
             <th>Description</th>
             <th>Location</th>
@@ -23,11 +23,13 @@
             <th>End Date</th>
             <th>Team size</th>
             <th>Deadline</th>
+            <th>Using PSEA</th>
+            <th width="220">Support Statement</th>
         </tr>
         <?php foreach ($projects as $project) {
             $this->renderPartial('partial_forms/_project',array(
-                'selectedProjects'=>$selectedProjects,
-                'project'=>$project,
+                'isSelected' => in_array($project->id, $selectedProjects),
+                'project' => $project,
             ));
         }?>
     </table>

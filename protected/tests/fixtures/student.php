@@ -1,0 +1,36 @@
+<?php
+
+return array(
+    'student1'=>array(
+        'id'=>1,
+        'firstName' => 'Name',
+        'familyName' => 'Nguyen Danh',
+        'gender' => 1,
+        'studentNumber' => 'S1234',
+        'school' => 'SoE',
+        'course' => 'ECE',
+        'level' => '1.5',
+        'birthday' => '2014-03-19',
+        'race' => 'Asian',
+        'religion' => 'None',
+        'nationality' => 'Vietnamese',
+        'isPR' => '0',
+        'nricNumber' => 'G1451343M',
+        'passportNumber' => 'B5322433',
+        'issuingCountry' => 532,
+        'issuingDate' => '2014-03-03',
+        'expiryDate' => '2014-03-25',
+        'tshirtSize' => '3',
+        'bloodGroup' => '3',
+        'swimmingAbility' => '3',
+        'homeAddress' => 'Kismis Ave',
+        'postalCode' => '10000',
+        'housingType' => '2',
+        'personalEmail' => 'ndnam93@gmail.com',
+        'mobilePhone' => '12345679',
+        'homePhone' => '12345679',
+        'created' => '2014-03-15 10:30:24',
+        'modified' => '2014-03-15 10:30:24',
+    ),
+);
+
