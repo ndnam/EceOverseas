@@ -2,48 +2,63 @@
 /* @var $this ProjectController */
 /* @var $model Project */
 /* @var $applications StudentApplication[] */
+/* @var $staffs Staff[] */
+/* @var $staffRole integer */
 
 $this->breadcrumbs=array(
 	'Project'=>array('/project'),
 	'View Project',
 );
+$this->menu = array(
+    array('label'=>'Delete Project','url'=>'javascript:deleteProject(' . $model->id . ')'),
+);
 ?>
-<h1><?= $model->title ?></h1>
+<h1 id="project-title"><?= $model->title ?></h1>
 
 <?php $this->renderPartial('_project_form_edit',array(
     'model'=>$model,
+    'staffRole'=>$staffRole,
 ));?>
 
 <h2>Student applications</h2>
 
-<table style="width:auto">
-    <tr>
-        <th></th>
-        <th></th>
-        <th>Name</th>
-        <th>Status</th>
-    </tr>
-    <?php 
-    $i = 0;
-    foreach ($applications as $application) {
-        $i++;
-        $this->renderPartial('_student_application_view',array(
-            'data'=>$application,
-            'index'=>$i,
-        ));
-    }?>
-    <tr>
-        <td colspan="4" class="btns"> 
-            <a href="javascript:;" id="btnSelectAllApps">Select all</a>
-            <a href="javascript:;" id="btnClearApps">Clear</a>
-            <br/>
-            <a href="javascript:;" class="btnChangeAppStt" id="2Shortlisted">Shortlist</a>
-            <a href="javascript:;" class="btnChangeAppStt" id="3Confirmed">Confirm</a>
-            <a href="javascript:;" class="btnChangeAppStt" id="0Rejected">Reject</a>
-        </td>
-    </tr>
-</table>
-
+<?php if (count($applications) > 0) { ?>
+    <table style="width:auto">
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+        <?php 
+        $i = 0;
+        foreach ($applications as $application) {
+            $i++;
+            $this->renderPartial('_student_application_view',array(
+                'data'=>$application,
+                'index'=>$i,
+                'staffRole'=>$staffRole,
+            ));
+        }
+        
+        if ($staffRole == Project::ROLE_LEADER) { ?>
+            <tr>
+                <td colspan="4" class="btns"> 
+                    <a href="javascript:;" id="btnSelectAllApps">Select all</a>
+                    <a href="javascript:;" id="btnClearApps">Clear</a>
+                    <br/>
+                    <a href="javascript:;" class="btnChangeAppStt" id="2Shortlisted">Shortlist</a>
+                    <a href="javascript:;" class="btnChangeAppStt" id="3Confirmed">Confirm</a>
+                    <a href="javascript:;" class="btnChangeAppStt" id="0Rejected">Reject</a>
+                </td>
+            </tr>
+        <?php 
+        }?>
+    </table>
+<?php } else {
+    echo "There is no student application.";
+}
+?>
 
 <h2>Staff list</h2>
 
@@ -61,20 +76,31 @@ $this->breadcrumbs=array(
         $this->renderPartial('_project_staff_view',array(
             'data'=>$staff,
             'index'=>$i,
+            'staffRole'=>$staffRole,
         ));
-    }?>
-    <tr class="groupAddStaff">
-        <td colspan="4">
-            <?= CHtml::dropDownList('staffSelect', null, Staff::getStaffList()) ?>
-            <?= CHtml::dropDownList(
-                    'roleSelect', 
-                    null, 
-                    Dictionary::items(Dictionary::TYPE_STAFF_ROLE),
-                    ['class'=>'roleSelect'])
-            ?>
-            <a href="javascript:;" id="btnAddStaff">+ Add Staff</a>
-        </td>
-    </tr>
+    }
+    
+    if ($staffRole == Project::ROLE_LEADER) { ?>
+        <tr class="groupAddStaff">
+            <td></td>
+            <td></td>
+            <td>
+                <?= CHtml::dropDownList('staffSelect', null, Staff::getStaffList()) ?>
+            </td>
+            <td>
+                <?= CHtml::dropDownList(
+                        'roleSelect', 
+                        null, 
+                        Dictionary::items(Dictionary::TYPE_STAFF_ROLE),
+                        ['class'=>'roleSelect'])
+                ?>
+            </td>
+            <td>
+                <a href="javascript:;" id="btnAddStaff">+ Add Staff</a>
+            </td>
+        </tr>
+    <?php 
+    } ?>
 </table>
 
 <input type="hidden" id="projectId" value="<?= $model->id ?>">

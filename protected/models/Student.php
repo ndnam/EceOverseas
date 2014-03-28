@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table 'student':
  * @property string $id
+ * @property string $profileComplete
  * @property string $firstName
  * @property string $familyName
  * @property integer $gender
@@ -102,7 +103,7 @@ class Student extends CActiveRecord
          */
         public function validateExpiryDate($attribute,$params) {
             if (strtotime($this->$attribute) <= strtotime($this->issuingDate))
-                $this->addError ($attribute, 'Invalid expiry date');
+                $this->addError ($attribute, 'Invalid Expiry Date');
         }
         
         /**
@@ -110,14 +111,14 @@ class Student extends CActiveRecord
          * @param array $attributes
          * @param Boolean $clearErrors
          */
-        public function validate($attributes = null, $clearErrors = true) {
-            return  parent::validate($attributes, $clearErrors)
-                    && $this->validateRelated($this->medicalInfo)
-                    && $this->validateRelated($this->studentCcas)
-                    && $this->validateRelated($this->pastTrips)
-                    && $this->validateRelated($this->nextOfKin)
-                    && $this->validateRelated($this->familyMembers);
-        }
+//        public function validate($attributes = null, $clearErrors = true) {
+//            return  parent::validate($attributes, $clearErrors)
+//                    && $this->validateRelated($this->medicalInfo)
+//                    && $this->validateRelated($this->studentCcas)
+//                    && $this->validateRelated($this->pastTrips)
+//                    && $this->validateRelated($this->nextOfKin)
+//                    && $this->validateRelated($this->familyMembers);
+//        }
         
         /**
          * Validate related model(s)
@@ -181,6 +182,7 @@ class Student extends CActiveRecord
 			'issuingCountry' => array(self::BELONGS_TO, 'DictCountry', 'issuingCountry'),
 			'projects' => array(self::MANY_MANY, 'Project', 'studentapplication(studentId,projectId)'),
 			'studentCcas' => array(self::HAS_MANY, 'StudentCca', 'studentId'),
+                        'user' => array(self::HAS_ONE,'User','staffId'),
 		);
 	}
 
@@ -293,7 +295,70 @@ class Student extends CActiveRecord
             return true;
         }
         
+        public function afterSave() {
+            if (empty($this->medicalInfo)) {
+                $medicalInfo = new MedicalInfo;
+                $medicalInfo->studentId = $this->id;
+                $medicalInfo->save();
+            }
+            if (empty($this->nextOfKin)) {
+                $nextOfKin = new NextOfKin;
+                $nextOfKin->studentId = $this->id;
+                $nextOfKin->save();
+            }
+        }
+        
         public function getFullName() {
             return $this->firstName . ' ' . $this->familyName;
+        }
+        
+        /**
+         * Return true if student profile is complete
+         */
+        public function getProfileErrors() {
+            $errors = array();
+            if (!$this->validate())
+                array_push ($errors, 'student');
+            
+            foreach (['familyMembers','nextOfKin','pastTrips','studentCcas'] as $name) {
+                if (!$this->validateRelated($name)) {
+                    array_push ($errors, $name);
+                }
+            }
+            
+            if (empty($this->familyMembers))
+                array_push ($errors, 'familyMembers');
+            
+//            if (!$this->medicalInfo->validate())
+//                array_push ($errors, 'medicalInfo');
+//            if (is_array($this->studentCcas)) {
+//                foreach($this->studentCcas as $studentCca) {
+//                    if (!$studentCca->validate()) {
+//                        array_push ($errors, 'studentCca');
+//                        break;
+//                    }
+//                }
+//            }
+//            if (is_array($this->pastTrips)) {
+//                foreach ($this->pastTrips as $pastTrip) {
+//                    if (!$pastTrip->validate()) {
+//                        array_push ($errors, 'pastTrip');
+//                        break;
+//                    }
+//                }
+//            }
+//            if (!$this->nextOfKin->validate())
+//                array_push ($errors, 'nextOfKin');
+//            if (is_array($this->familyMembers)) {
+//                foreach ($this->familyMembers as $familyMembers) {
+//                    if (!$familyMembers->validate()) {
+//                        array_push ($errors, 'familyMembers');
+//                        break;
+//                    }
+//                }
+//            }
+            
+            
+            return $errors;
         }
 }

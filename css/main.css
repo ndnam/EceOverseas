@@ -123,9 +123,15 @@ div.flash-success a
 	color:#264409;
 }
 
-div.form .rememberMe label
+div.form .row.rememberMe input[type="checkbox"] {
+        margin-left: 230px;
+}
+
+div.form .row.rememberMe label
 {
 	display: inline;
+        width: auto;
+        margin-left: 10px;
 }
 
 div.view

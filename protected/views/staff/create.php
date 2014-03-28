@@ -1,6 +1,7 @@
 <?php
 /* @var $this StaffController */
 /* @var $staff Staff */
+/* @var $user User */
 /* @var $form CActiveForm */
 ?>
 
@@ -13,18 +14,18 @@
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($staff); ?>
+	<?php echo $form->errorSummary(array($user,$staff)); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($staff,'username'); ?>
-		<?php echo $form->textField($staff,'username'); ?>
-		<?php echo $form->error($staff,'username'); ?>
+		<?php echo $form->labelEx($user,'username'); ?>
+		<?php echo $form->textField($user,'username'); ?>
+		<?php echo $form->error($user,'username'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($staff,'password'); ?>
-		<?php echo $form->passwordField($staff,'password'); ?>
-		<?php echo $form->error($staff,'password'); ?>
+		<?php echo $form->labelEx($user,'password'); ?>
+		<?php echo $form->passwordField($user,'password'); ?>
+		<?php echo $form->error($user,'password'); ?>
 	</div>
         
 	<div class="row">

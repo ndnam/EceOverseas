@@ -2,6 +2,7 @@
 /* @var $this ProjectController */
 /* @var $model Project */
 /* @var $form CActiveForm */
+/* @var $staffRole integer */
 ?>
 
 <div class="form">
@@ -13,7 +14,6 @@
 
 	<?php echo $form->errorSummary($model); ?>
         
-        <input type="hidden" name="Project[id]" value="<?=$model->id?>">
 	<div class="row">
 		<?php echo $form->labelEx($model,'title'); ?>
                 <p class="attr-value"><?= CHtml::encode($model->title) ?></p>
@@ -98,19 +98,18 @@
                 <?php echo $form->dropdownList($model,'status',Dictionary::items(Dictionary::TYPE_PROJECT_STATUS),array('class'=>'hide')); ?>
         </div>
     
-        <div class="row project-btns">
-            <div class="cell algn-right">
-                <a href="javascript:;" class="btn-edit">Edit</a>
-                <a href="javascript:;" class="btn-update hide">Update</a>
+        <?php if ($staffRole == Project::ROLE_LEADER) { ?>
+            <div class="row project-btns">
+                <div class="cell algn-right">
+                    <a href="javascript:;" class="btn-edit">Edit</a>
+                    <a href="javascript:;" class="btn-update hide">Update</a>
+                </div>
+                <div class="cell algn-left">
+                    <a href="javascript:;" class="btn-cancel hide">Cancel</a>
+                </div>
             </div>
-            <div class="cell algn-left">
-                <a href="javascript:;" class="btn-cancel hide">Cancel</a>
-            </div>
-        </div>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Submit',array('class'=>'hide')); ?>
-	</div>
+        <?php 
+        }?>
 
 <?php $this->endWidget(); ?>
 

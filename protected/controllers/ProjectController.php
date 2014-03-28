@@ -23,16 +23,13 @@ class ProjectController extends Controller
 	{
             return array(
                 array('allow',  
-                    'actions'=>array('index','view','test','changeApplicationStatus','changeStaffRole','addStaff','removeStaff'),
-                    'users'=>array('*'),
-                ),
-                array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                    'actions'=>array('create','update'),
+                    'actions'=>array('test'),
                     'users'=>array('@'),
                 ),
-                array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                    'actions'=>array('admin','delete'),
-                    'users'=>array('admin'),
+                array('allow',
+                    'actions'=>array('index','view','create','update','delete','changeApplicationStatus','changeStaffRole','addStaff','removeStaff'),
+                    'users'=>array('@'),
+                    'expression'=>'$user->accountType == 1',
                 ),
                 array('deny',  // deny all users
                     'users'=>array('*'),
@@ -44,10 +41,22 @@ class ProjectController extends Controller
          * List all Projects
          */
         public function actionIndex() {
-            $dataProvider = new CActiveDataProvider('Project');
-            $this->render('index',array(
-                'dataProvider'=>$dataProvider,
-            ));
+            $projects = Project::model()->findAll(array('order'=>'modified DESC'));
+            
+            if (Yii::app()->user->accountType == 1) {
+                $relatedProjects = array();
+                foreach ($projects as $project) {
+                    if ($project->getStaffRole(Yii::app()->user->staffId)) {
+                        array_push($relatedProjects, $project);
+                    }
+                }
+                $otherProjects = array_diff($projects, $relatedProjects);
+                
+                $this->render('index',array(
+                    'relatedProjects'=>$relatedProjects,
+                    'otherProjects'=>$otherProjects,
+                ));
+            }
         }
         
         /**
@@ -55,14 +64,13 @@ class ProjectController extends Controller
          * @param integer $id
          */
         public function actionView($id) {
-            $model = new Project();
+            $model = $this->loadModel($id);
+            $role = $model->getStaffRole(Yii::app()->user->staffId);
             
             // Update Project via Ajax
             if (isset($_POST['Project'])) {
                 $model->attributes = $_POST['Project'];
-                $model->setPrimaryKey($_POST['Project']['id']);
-                $model->isNewRecord = false;
-                
+                $model->status = $_POST['Project']['status'];
                 //Ajax validation
                 if(isset($_POST['ajax']) && $_POST['ajax']==='project-edit-form'){
                     echo CActiveForm::validate($model);
@@ -71,8 +79,9 @@ class ProjectController extends Controller
                 //Save model
                 if ($model->save()) {
                     $status = 1;
-                } else 
+                } else {
                     $status = 0;
+                }
                 echo CJavaScript::jsonEncode(array(
                     'status'=>$status,
                     'model'=>$model->attributes,
@@ -96,7 +105,8 @@ class ProjectController extends Controller
             ));
             
             $this->render('view',array(
-                'model'=>$this->loadModel($id),
+                'model'=>$model,
+                'staffRole'=>$role,
                 'applications'=>$appDataProvider->getData(),
                 'staffs'=>$staffDataProvider->getData(),
             ));
@@ -104,25 +114,31 @@ class ProjectController extends Controller
         
 	public function actionChangeStaffRole()
 	{
-            header('Content-type: application/json');
 	    if (!(isset($_POST['projectStaffId']) && isset($_POST['role']))) {
                 $this->returnError('Invalid request');
             }
             
             $projectStaffId = $_POST['projectStaffId'];
             $role = $_POST['role'];
-            
-	    if (!in_array($role,[1,2,3,4,5])) {
+
+            if (!in_array($role,[1,2,3,4,5])) {
                 $this->returnError('Invalid role value');
             }
-            
-            $projectStaff = ProjectStaff::model()->findByAttributes(array('id'=>$projectStaffId));
+
+            $projectStaff = ProjectStaff::model()->findByPk($projectStaffId);
             if ($projectStaff) {
-                $projectStaff->role = $role;
-                if ($projectStaff->save()) {
-                    $this->returnSuccess();
+                // Get the current Project's model
+                $project = $this->loadModel($projectStaff->projectId);
+                // Authorize the current user
+                if ($project->getStaffRole(Yii::app()->user->staffId)) {
+                    $projectStaff->role = $role;
+                    if ($projectStaff->save()) {
+                        $this->returnSuccess();
+                    } else {
+                        $this->returnError('Error: Database record cannot be updated');
+                    }
                 } else {
-                    $this->returnError('Error: Database record cannot be updated');
+                    $this->returnError('You don\'t have permission to perform this task');
                 }
             } else {
                 $this->returnError('Record not found');
@@ -142,89 +158,111 @@ class ProjectController extends Controller
             
             $stdAppIds = $_POST['stdAppIds'];
             $status = $_POST['status'];
-            
-	    if (!in_array($status,[0,1,2,3])) {
+
+            if (!in_array($status,[0,1,2,3])) {
                 $this->returnError('Invalid status value');
             }
-                
+
             if (!is_array($stdAppIds)) {
                 $this->returnError('Invalid student application IDs');
             }
             
-            $errorIDs = array();
-            $studentApps = StudentApplication::model()->findAllByPk($stdAppIds);
-            if (count($studentApps) < count($stdAppIds)) { // Some application IDs are not found in database
-                $foundIDs = array();
+            // Get the current Project's model
+            $project = $this->loadModel(StudentApplication::model()->findByPk($stdAppIds[0])->projectId);
+            // Authorize the current user
+            if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
+                
+                $errorIDs = array(); // List of the unsucessfully changed studentapplication's IDs
+                $studentApps = StudentApplication::model()->findAllByPk($stdAppIds);
+                // If some application IDs are not found in database
+                if (count($studentApps) < count($stdAppIds)) { 
+                    $foundIDs = array();
+                    foreach ($studentApps as $studentApp) {
+                        array_push($foundIDs, $studentApp->id);
+                    }
+                    // Save the unfound IDs to $errorIDs
+                    $errorIDs = array_diff($stdAppIds,$foundIDs);
+                }
                 foreach ($studentApps as $studentApp) {
-                    array_push($foundIDs, $studentApp->id);
+                    $studentApp->status = $status;
+                    if (!$studentApp->save()) {
+                        array_push($errorIDs,$studentApp->id);
+                    }
                 }
-                // Save the unfound IDs to $errorIDs
-                $errorIDs = array_diff($stdAppIds,$foundIDs);
-            }
-            foreach ($studentApps as $studentApp) {
-                $studentApp->status = $status;
-                if (!$studentApp->save()) {
-                    array_push($errorIDs,$studentApp->id);
+                if (count($errorIDs) == 0) {
+                    $this->returnSuccess();
+                } else {
+                    echo CJSON::encode(array(
+                        'status'=>0,
+                        'errorIDs'=>$errorIDs,
+                        'message'=>'Some error occurred. Not every application status has been changed',
+                    ));
                 }
-            }
-            if (count($errorIDs) == 0) {
-                $this->returnSuccess();
             } else {
-                echo CJSON::encode(array(
-                    'status'=>0,
-                    'errorIDs'=>$errorIDs,
-                    'message'=>'Some error occurred. Not every application status has been changed',
-                ));
+                $this->returnError('You don\'t have permission to perform this task');
             }
 	}
         
         public function actionAddStaff() {
-            header('Content-type: application/json');
             if (!(isset($_POST['projectId']) && isset($_POST['staffId']) && isset($_POST['role']))) {
                 $this->returnError('Invalid request');
             }
             
-            $projectId = $_POST['projectId'];
             $staffId = $_POST['staffId'];
             $role = $_POST['role'];
-            if (is_null(Project::model()->findByPk($projectId))){
+            // Get the current Project's model
+            $project = $this->loadModel($_POST['projectId']);
+            if ($project) {
+                $staffRole = $project->getStaffRole(Yii::app()->user->staffId);
+                // Authorize the current user
+                if ($staffRole == Project::ROLE_LEADER) {
+                    try {
+                        if ($projectStaffId = $project->addStaff($staffId,$role)){
+                            echo CJSON::encode(array(
+                                'status'=>1,
+                                'staffId'=>$staffId,
+                                'staff'=>$this->renderPartial('_project_staff_view',array(
+                                    'data'=>ProjectStaff::model()->with('staff')->findByPk($projectStaffId),
+                                    'index'=>0,
+                                    'staffRole'=>$staffRole, // This is the current user's role in the project
+                                ),true),
+                            ));
+                        } else {
+                            $this->returnError('Cannot add staff to project');
+                        }
+                    } catch (CException $e) {
+                        $this->returnError($e->getMessage());
+                    }
+                } else {
+                    $this->returnError('You don\'t have permission to perform this task');
+                }
+            } else {
                 $this->returnError('Invalid project ID');
             }
-            if (is_null(Staff::model()->findByPk($staffId))) {
-                $this->returnError('Invalid staff ID');
-            }
-            if (!in_array($role, [1,2,3,4,5])) {
-                $this->returnError('Invalid role');
-            }
-            $projectStaff = new ProjectStaff;
-            $projectStaff->role = $role;
-            $projectStaff->staffId = $staffId;
-            $projectStaff->projectId = $projectId;
-            if ($projectStaff->save()){
-            echo CJSON::encode(array(
-                'status'=>1,
-                'staff'=>$this->renderPartial('_project_staff_view',array(
-                    'data'=>ProjectStaff::model()->with('staff')->findByPk($projectStaff->id),
-                    'index'=>0,
-                ),true),
-            ));
-            } else 
-                $this->returnError ('Cannot add staff to project');
         }
         
         public function actionRemoveStaff() {
-            header('Content-type: application/json');
             if (!isset($_POST['prjStaffId'])) {
                 $this->returnError('Invalid request');
             }
             $prjStaffId = $_POST['prjStaffId'];
-            if (ProjectStaff::model()->deleteByPk($prjStaffId) > 0) {
-                $this->returnSuccess();
-            } else
-                $this->returnError('Error: cannot delete record');
+            $projectStaff = ProjectStaff::model()->findByPk($prjStaffId);
+            // Get the current Project's model
+            $project = $this->loadModel($projectStaff->projectId);
+            // Authorize the current user
+            if ($project->getStaffRole(Yii::app()->user->staffId)) {
+                if ($projectStaff->delete()) {
+                    $this->returnSuccess();
+                } else {
+                    $this->returnError('Error: cannot delete record');
+                }
+            } else {
+                $this->returnError('You don\'t have permission to perform this task');
+            }
         }
         
         protected function returnSuccess() {
+            header('Content-type: application/json');
             echo CJSON::encode(array(
                 'status'=>1,
             ));
@@ -236,9 +274,10 @@ class ProjectController extends Controller
          * @param string $message
          */
         protected function returnError($message) {
+            header('Content-type: application/json');
             echo CJSON::encode(array(
                 'status'=>0,
-                'message'=>$message,
+                'message'=>$message ? $message : 'Some error occured. Unable to complete request.',
             ));
             Yii::app()->end();
         }
@@ -255,6 +294,7 @@ class ProjectController extends Controller
             }
             if (isset($_POST['Project'])) {
                 $project->attributes = $_POST['Project'];
+                $project->creator = Yii::app()->user->staffId;
                 $isOK = true;
                 if (isset($_POST['Location'])) {
                     $location->attributes = $_POST['Location'];
@@ -264,6 +304,12 @@ class ProjectController extends Controller
                 }
                 if ($project->validate() && $isOK) {
                     $project->save();
+                    // Assign the creator as the project leader
+                    $projectStaff = new ProjectStaff;
+                    $projectStaff->projectId = $project->id;
+                    $projectStaff->staffId = Yii::app()->user->staffId;
+                    $projectStaff->role = Project::ROLE_LEADER;
+                    $projectStaff->save();
                     $firephp->log($project->attributes);
                     $this->redirect(array('/project'));
                 }
@@ -287,6 +333,10 @@ class ProjectController extends Controller
 	 */
 	public function loadModel($id)
 	{
+//            if (Yii::app()->user->accountType == User::TYPE_STUDENT) {
+//                $condition = 'status='.Project::STATUS_PUBLIC;
+//            } else 
+//                $condition = '';
             $model=Project::model()->findByPk($id);
             if($model===null)
                 throw new CHttpException(404,'The requested page does not exist.');
@@ -294,10 +344,28 @@ class ProjectController extends Controller
 	}
         
         public function actionTest() {
-            $this->redirect(array('/project'));
+            echo CPasswordHelper::hashPassword('1234');
         }
         
-        
+        /**
+         * Delete a project. Only accept ajax request.
+         */
+        public function actionDelete(){
+            if (!isset($_POST['projectId'])) {
+                $this->returnError('Invalid request');
+            }
+            
+            $projectId = $_POST['projectId'];
+            $project = $this->loadModel($projectId);
+            // Authorize the current user
+            if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
+                if ($project->delete()) {
+                    $this->returnSuccess();
+                } else  
+                    $this->returnError();
+            } else  
+                $this->returnError('You don\'t have permission to perform this task');
+        }
         
 
 }

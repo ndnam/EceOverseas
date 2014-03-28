@@ -1,0 +1,13 @@
+/* 
+    Created on : Mar 26, 2014, 3:18:19 PM
+    Author     : Ndnam
+*/
+
+div.page-title {
+    margin-left: 30px;
+    padding: 10px 20px;
+}
+
+div.page-title h1 {
+    margin: 0;
+}

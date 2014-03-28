@@ -17,6 +17,8 @@
  */
 class ProjectStaff extends CActiveRecord
 {
+        const ROLE_LEADER = 1;
+        const ROLE_SUPPORT = 2;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -113,10 +115,10 @@ class ProjectStaff extends CActiveRecord
         
         public function beforeSave() {
             $this->modified = NULL;
-            if ($this->isNewRecord) 
+            if ($this->isNewRecord) {
                 $this->created = NULL;
-            if (count(ProjectStaff::model()->findAllByAttributes(array('projectId'=>$this->projectId,'staffId'=>$this->staffId))) > 0) {
-                throw new CDbException('Record already existed in table');
+                if (count(ProjectStaff::model()->findAllByAttributes(array('projectId'=>$this->projectId,'staffId'=>$this->staffId))) > 0) 
+                    throw new CDbException('Staff has already been assigned to this project');
             }
             return true;
         }

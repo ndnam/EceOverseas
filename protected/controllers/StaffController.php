@@ -14,21 +14,33 @@ class StaffController extends Controller
         
         public function actionCreate() {
             $staff = new Staff;
+            $user = new User;
+            $user->accountType = User::TYPE_STAFF;
             
             //Ajax validation
             if(isset($_POST['ajax']) && $_POST['ajax']==='staff-create-form'){
-                echo CActiveForm::validate($staff);
+                echo CActiveForm::validate(array($user,$staff));
                 Yii::app()->end();
             }
             
             if (isset($_POST['Staff'])) {
                 $staff->attributes = $_POST['Staff'];
-                if ($staff->save()) {
-                    $this->redirect('/');
+                
+                if (isset($_POST['User'])) 
+                    $user->attributes = $_POST['User'];
+                    
+                if ($staff->validate() * $user->validate()) {
+                    if ($staff->save()) {
+                        $user->staffId = $staff->id;
+                        if ($user->save()) {
+                            $this->redirect(array('project/index'));
+                        }
+                    }
                 }
             }
             
             $this->render('create',array(
+                'user'=>$user,
                 'staff'=>$staff,
             ));
         }

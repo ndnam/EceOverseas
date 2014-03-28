@@ -27,17 +27,10 @@ class StudentController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  
-				'actions'=>array('index','view','apply','test','closeSession'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+			array('allow',
+				'actions'=>array('index','apply','closeSession'),
 				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+                                'expression'=>'$user->accountType == 2',
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -55,6 +48,14 @@ class StudentController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
+        
+        /**
+         * View a project
+         * @param integer $id
+         */
+        public function actionProject($id) {
+            
+        }
 
         public function actionCloseSession() {
             Yii::app()->session->destroy();
@@ -67,7 +68,6 @@ class StudentController extends Controller
          */
 	public function actionApply($step = 1)
 	{
-            
             $firephp = FirePHP::getInstance(true);
             
             if (isset($_SESSION['Student']) && ($student = $_SESSION['Student']) instanceof Student) {
@@ -143,7 +143,7 @@ class StudentController extends Controller
                     if (isset($student)) {
                         
                         // Check if this is a postback
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                        if (Yii::app()->request->isPostRequest) {
                             if (empty($_POST['noCCA'])) {
                                 if (isset($_POST['StudentCca'])) {
                                     $student->studentCcas = StudentController::assignRelatedModels($_POST['StudentCca'],'StudentCca');
@@ -180,7 +180,7 @@ class StudentController extends Controller
                         if (is_null($student->nextOfKin)) 
                             $student->nextOfKin = new NextOfKin;
                         // Check if this is a postback
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                        if (Yii::app()->request->isPostRequest) {
                             if (isset($_POST['NextOfKin'])) {
                                 $student->nextOfKin->attributes = $_POST['NextOfKin'];
                             }
@@ -210,7 +210,7 @@ class StudentController extends Controller
                     if (isset($student)) {
                         $projects = Project::model()->findAll();
                         // Check if this is a postback
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                        if (Yii::app()->request->isPostRequest) {
                             if (isset($_POST['projectId'])) {
                                 $student->projects = Project::model()->findAllByPk($_POST['projectId']);
                                 if (isset($_POST['Project'])) {
@@ -239,7 +239,7 @@ class StudentController extends Controller
                     $firephp->log($_SESSION['Project']);
                     if (isset($student)) {
                         // Check if this is a postback
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                        if (Yii::app()->request->isPostRequest) {
                             if (isset($_POST['btnBack'])) {
                                 $this->redirect(array('apply','step' => 5));
                             }
@@ -294,30 +294,6 @@ class StudentController extends Controller
         }
 
 	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
-	public function actionUpdate($id)
-	{
-		$model=$this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Student']))
-		{
-			$model->attributes=$_POST['Student'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
-
-		$this->render('update',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -336,25 +312,13 @@ class StudentController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Student');
+                $student = $this->loadModel(Yii::app()->user->studentId);
+                if (count($student->profileErrors) == 0) {
+                    $projects = Project::model()->findAll('status='.Project::STATUS_PUBLIC);
+                } else $projects = null;
 		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Student('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Student']))
-			$model->attributes=$_GET['Student'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
+                    'projects'=>$projects,
+                ));
 	}
 
 	/**

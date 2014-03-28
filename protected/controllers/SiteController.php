@@ -2,6 +2,30 @@
 
 class SiteController extends Controller
 {
+	public function filters()
+	{
+		return array(
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
+        
+	public function accessRules()
+	{
+            return array(
+                array('allow',  
+                    'actions'=>array('contact','login'),
+                    'users'=>array('*'),
+                ),
+                array('allow',  
+                    'actions'=>array('index','logout'),
+                    'users'=>array('@'),
+                ),
+                array('deny',  // deny all users
+                    'users'=>array('*'),
+                ),
+            );
+	}
+        
 	/**
 	 * Declares class-based actions.
 	 */
@@ -27,9 +51,11 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+		if (Yii::app()->user->accountType == User::TYPE_STUDENT){
+                    $this->redirect(array('student/index'));
+                } else {
+                    $this->redirect(array('project/index'));
+                }
 	}
 
 	/**
@@ -92,7 +118,11 @@ class SiteController extends Controller
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
+				if (Yii::app()->user->accountType == User::TYPE_STUDENT){
+                                    $this->redirect(array('student/index'));
+                                } else {
+                                    $this->redirect(array('project/index'));
+                                }
 		}
 		// display the login form
 		$this->render('login',array('model'=>$model));
@@ -104,6 +134,7 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();
+                unset($_SESSION['student']);
 		$this->redirect(Yii::app()->homeUrl);
 	}
 }

@@ -19,6 +19,10 @@
  */
 class StudentApplication extends CActiveRecord
 {
+        const STATUS_REJECTED = 0;
+        const STATUS_PENDING = 1;
+        const STATUS_SHORTLISTED = 2;
+        const STATUS_CONFIRMED = 3;
 	/**
 	 * @return string the associated database table name
 	 */

@@ -5,8 +5,6 @@
  *
  * The followings are the available columns in table 'staff':
  * @property string $id
- * @property string $username
- * @property string $password
  * @property string $initial
  * @property string $fullName
  * @property string $email
@@ -35,9 +33,8 @@ class Staff extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, initial, fullName, email, phone', 'required'),
-			array('username', 'length', 'max'=>64),
-			array('password', 'length', 'max'=>128),
+			array('initial, fullName, email, phone','filter','filter'=>'trim'),
+			array('initial, fullName, email, phone', 'required'),
 			array('initial', 'length', 'max'=>10),
 			array('fullName', 'length', 'max'=>100),
 			array('email', 'length', 'max'=>50),
@@ -50,6 +47,11 @@ class Staff extends CActiveRecord
 		);
 	}
 
+        public function behaviors() {
+            return array('EAdvancedArBehavior' => array(
+                'class' => 'application.extensions.EAdvancedArBehavior'));
+        }
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -59,6 +61,7 @@ class Staff extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'projectstaff' => array(self::HAS_MANY, 'Projectstaff', 'staffId'),
+                        'user' => array(self::HAS_ONE,'User','staffId'),
 		);
 	}
 

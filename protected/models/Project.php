@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'project':
  * @property string $id
  * @property string $title
+ * @property string $status
  * @property string $description
  * @property string $locationId
  * @property string $startDate
@@ -17,11 +18,17 @@
  *
  * The followings are the available model relations:
  * @property Location $location
- * @property ProjectStaff[] $projectstaff
+ * @property ProjectStaff[] $projectstaffs
  * @property StudentApplication[] $studentapplications
+ * @property Staff $creator
  */
 class Project extends CActiveRecord
 {
+        const STATUS_NEW = 1;
+        const STATUS_PUBLIC = 2;
+        const STATUS_CLOSED = 3;
+        const ROLE_LEADER = 1;
+        const ROLE_SUPPORT = 2;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -48,7 +55,7 @@ class Project extends CActiveRecord
                         array('startDate','checkBeforeDate','largerDate'=>'endDate'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, title, description, locationId, startDate, endDate, teamSize, deadline, created, modified', 'safe', 'on'=>'search'),
+			array('id, title, status, description, locationId, startDate, endDate, teamSize, deadline, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
         
@@ -66,8 +73,10 @@ class Project extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'location' => array(self::BELONGS_TO, 'Location', 'locationId'),
-			'projectstaff' => array(self::HAS_MANY, 'Projectstaff', 'projectId'),
+			'projectstaffs' => array(self::HAS_MANY, 'ProjectStaff', 'projectId'),
+			'studentapplications' => array(self::HAS_MANY, 'StudentApplication', 'projectId'),
 			'students' => array(self::MANY_MANY, 'Student', 'studentapplication(studentId,projectId)'),
+                        'creator' => array(self::BELONGS_TO, 'Staff', 'createdBy'),
 		);
 	}
 
@@ -79,6 +88,7 @@ class Project extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'title' => 'Title',
+                        'status' => 'Status',
 			'description' => 'Description',
 			'locationId' => 'Location',
 			'startDate' => 'Start Date',
@@ -110,6 +120,7 @@ class Project extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('title',$this->title,true);
+		$criteria->compare('status',$this->status,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('locationId',$this->locationId,true);
 		$criteria->compare('startDate',$this->startDate,true);
@@ -157,5 +168,44 @@ class Project extends CActiveRecord
                     $this->addError($attribute, $attribute . ' must be before ' . $params['largerDate']);
                 }
             }
+        }
+        
+        public function getStaffRole($staffId) {
+            if ($staffId == $this->creator->id) 
+                return self::ROLE_LEADER;
+            if ($projectstaff = ProjectStaff::model()->find('projectId = :projectId AND staffId = :staffId', array(':projectId'=>$this->id,':staffId'=>$staffId)))
+                return $projectstaff->role;
+            return 0;
+        }
+        
+        public function __toString() {
+            return $this->id;
+        }
+        
+        public function addStaff($staffId,$role) {
+            if (!$this->isNewRecord) {
+                if (!in_array($role, [1,2,3,4,5])) {
+                    throw new CException('Invalid role');
+                }
+                $projectStaff = new ProjectStaff;
+                $projectStaff->role = $role;
+                $projectStaff->staffId = $staffId;
+                $projectStaff->projectId = $this->id;
+                if ($projectStaff->save()) {
+                    return $projectStaff->id;
+                }
+            }
+            return false;
+        }
+        
+        public function beforeDelete() {
+            $isOk = true;
+            foreach ($this->studentapplications as $studentApps) {
+                $isOk = $studentApps->delete() && $isOk;
+            }
+            foreach ($this->projectstaffs as $projectStaff) {
+                $isOk = $projectStaff->delete() && $isOk;
+            }
+            return $isOk && parent::beforeDelete();
         }
 }
