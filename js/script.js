@@ -42,8 +42,6 @@ $(document).ready(function(){
        }
     });
     
-    initPastTripForm();
-    
     // Project selecting page - step 5
     $('.cbSelectPrj').change(function(){
         if ($(this).prop('checked') == true)  {
@@ -230,8 +228,8 @@ function resetStaffListIndex() {
     })
 }
 
-function initPastTripForm() {
-    $('.cbIsSubsidized').change(function(){
+function initPastTripForm(parent) { //parent is selector
+    $(parent + '.cbIsSubsidized').change(function(){
         var inputAmount = $('#' +  $(this).attr('id').replace('isSubsidized','amount'));
         console.log(inputAmount);
         if ($(this).prop('checked') == true) {

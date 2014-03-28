@@ -39,7 +39,7 @@ $(document).ready(function(){
     $('input, textarea, select').change(function(){
         if (notModified) {
             $(window).bind('beforeunload', function(){ 
-                return 'You are navigating away. Make you have saved you data first.';
+                return 'You are navigating away. Make sure you have saved you data first.';
             });
             notModified = false;
         }

@@ -40,7 +40,7 @@ class UserController extends Controller {
     }
 
     public function actionProfile($page = 'general') {
-        $user = User::model()->with('staff', 'student')->findByPk(Yii::app()->user->id);
+        $user = User::model()->findByPk(Yii::app()->user->id);
         if ($user->accountType == User::TYPE_STAFF) {
             $this->render('profile_staff', array(
                 'staff' => $user->staff,
@@ -50,10 +50,10 @@ class UserController extends Controller {
             if (isset($_SESSION['student'])) {
                 $student = $_SESSION['student'];
             } else {
-                $student = $user->student;
+                $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips')->findByPk($user->studentId);
+//                $student = $user->student;
                 $_SESSION['student'] = $student;
             }
-            
             switch ($page) {
                 case 'general':
                     //Ajax validation
@@ -65,9 +65,7 @@ class UserController extends Controller {
                         $student->attributes = $_POST['Student'];
                         $student->isNewRecord = false;
                         $student->save(false);
-                    } else {
-                        $student->refresh();
-                    }
+                    } 
                     if ($student->created != $student->modified) { //The record has been modified
                         $student->validate();
                     }
@@ -85,9 +83,7 @@ class UserController extends Controller {
                         $medicalInfo->attributes = $_POST['MedicalInfo'];
                         $medicalInfo->isNewRecord = false;
                         $medicalInfo->save(false);
-                    } else {
-                        $medicalInfo->refresh();
-                    }
+                    } 
                     if ($medicalInfo->created != $medicalInfo->modified) { //The record has been modified
                         $medicalInfo->validate();
                     }

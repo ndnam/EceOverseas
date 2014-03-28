@@ -155,7 +155,7 @@ $this->breadcrumbs=array(
 	</div>
 
         <div class="row buttons">
-            <input type="submit" value="Save" name="btnNext" style="margin-left: 230px;">
+            <input type="submit" value="Save" name="btnSave" style="margin-left: 230px;">
         </div>
 
 <?php $this->endWidget(); ?>

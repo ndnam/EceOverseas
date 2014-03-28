@@ -35,13 +35,9 @@ class StudentCca extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('period, organization, position, description', 'length', 'max'=>100),
+			array('period, organization, position, description', 'filter', 'filter'=>'trim'),
 			array('period, organization, position', 'required'),
 			array('isInNP', 'numerical', 'integerOnly'=>true),
-			array('studentId', 'length', 'max'=>10),
-			array('period', 'length', 'max'=>50),
-			array('organization, position', 'length', 'max'=>100),
-			array('description', 'length', 'max'=>500),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, studentId, isInNP, period, organization, position, description, created, modified', 'safe', 'on'=>'search'),

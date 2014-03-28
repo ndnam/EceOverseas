@@ -38,8 +38,6 @@ class FamilyMember extends CActiveRecord
 			array('relationship, fullname, age, occupation, monthlyIncome', 'filter', 'filter'=>'trim'),
 			array('relationship, fullname, age, occupation, monthlyIncome', 'required'),
 			array('age, monthlyIncome', 'numerical', 'integerOnly'=>true),
-			array('relationship', 'length', 'max'=>50),
-			array('fullname, occupation', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, studentId, relationship, fullname, age, occupation, monthlyIncome, created, modified', 'safe', 'on'=>'search'),

@@ -72,9 +72,6 @@ class Student extends CActiveRecord
 			array('firstName, familyName, studentNumber, school, course, level, birthday, race, religion, nationality, passportNumber, issuingCountry, issuingDate, expiryDate, homeAddress, postalCode, personalEmail, mobilePhone', 'required'),
 			array('gender, isPR, tshirtSize, bloodGroup, swimmingAbility, housingType', 'numerical', 'integerOnly'=>true),
 			array('firstName, familyName, school, course, race, religion, nationality, passportNumber, personalEmail', 'length', 'max'=>50),
-			array('studentNumber, level, nricNumber, postalCode', 'length', 'max'=>10),
-			array('mobilePhone, homePhone', 'length', 'max'=>20),
-			array('homeAddress', 'length', 'max'=>200),
                         array('personalEmail','email'),
                         //Custom validators:
                         array('mobilePhone, homePhone','match','pattern'=>'/^\d+$/'),

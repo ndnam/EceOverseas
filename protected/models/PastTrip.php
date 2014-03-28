@@ -45,10 +45,7 @@ class PastTrip extends CActiveRecord
 			array('programName, duration, capacity', 'filter', 'filter'=>'trim'),
 			array('programName, duration, capacity', 'required'),
 			array('isSubsidized, amount, country', 'numerical', 'integerOnly'=>true),
-			array('amount', 'numerical'),
-			array('studentId', 'length', 'max'=>10),
-			array('programName', 'length', 'max'=>100),
-			array('duration, capacity', 'length', 'max'=>50),
+			array('amount', 'numerical', 'min'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, studentId, programName, country, duration, capacity, isSubsidized, amount, created, modified', 'safe', 'on'=>'search'),
