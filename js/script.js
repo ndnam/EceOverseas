@@ -150,21 +150,29 @@ $(document).ready(function(){
     
     // Staff list
     $('#btnAddStaff').click(function(){
-        $.post('/EceOverseas/project/addStaff',
-            {projectId:$('#projectId').val(), staffId:$('#staffSelect').val(), role:$('#roleSelect').val()},
-            function(data){
-                console.log(data);
-                if (data.status == 1) {
-                    $('.groupAddStaff').before(data.staff);
-                    initStaffEditBtns(data.staffId);
-                    resetStaffListIndex();
-                } else 
-                    if (data.message) alert(data.message);
-        });
+        if ($('#staffSelect').val() > 0) {
+            $.post('/EceOverseas/project/addStaff',
+                {projectId:$('#projectId').val(), staffId:$('#staffSelect').val(), role:$('#roleSelect').val()},
+                function(data){
+                    console.log(data);
+                    if (data.status == 1) {
+                        $('.groupAddStaff').before(data.staff);
+                        initStaffEditBtns(data.staffId);
+                        resetStaffListIndex();
+                    } else 
+                        if (data.message) alert(data.message);
+            });
+            reloadStaffSelect();
+        }
     });
     initStaffEditBtns();
     
-    
+    // Delete student application
+    $('#btnDeleteApp').click(function(){
+        if (confirm('Do you want to delete your application for this project?')) {
+            window.location.href = '/EceOverseas/student/deleteApp/' + $(this).attr('appId');
+        }
+    });
 });
 
 function initStaffEditBtns(staffId) {
@@ -186,6 +194,9 @@ function initStaffEditBtns(staffId) {
                     btnDoneTr.find('span.staffRole').text(roleSelect.find('option:selected').text());
                     btnDoneTr.find('span.staffRole, .btnEditStaff').show();
                     btnDoneTr.find('select.roleSelect, .btnDoneEditStaff').hide();
+                    if (data.refresh) {
+                        location.reload();
+                    }
                 } else {
                     alert(data.message);
                 }
@@ -199,11 +210,25 @@ function initStaffEditBtns(staffId) {
                 {prjStaffId:$(this).attr('prjStaffId')},
                 function(data){
                     if (data.status == 1) {
+                        if (data.refresh) {
+                            location.reload();
+                        }
                         btnRemoveStaff.parents('tr').detach();
                         resetStaffListIndex();
                     } else 
-                        alert('Error: cannot remove staff');
+                        alert(data.message);
             });
+            reloadStaffSelect();
+        }
+    });
+}
+
+function reloadStaffSelect() {
+    $.get('/EceOverseas/project/availableStaffs',{projectId:$('#projectId').val()},function(staffs){
+        console.log(staffs);
+        $('#staffSelect').html('<option value="0">Select staff</option>');
+        for (var i=0;i<staffs.length;i++) {
+            $('#staffSelect').append('<option value="' + staffs[i].id + '">' + staffs[i].fullName + '</option>');
         }
     });
 }
@@ -229,13 +254,29 @@ function resetStaffListIndex() {
 }
 
 function initPastTripForm(parent) { //parent is selector
-    $(parent + '.cbIsSubsidized').change(function(){
+    $(parent + ' .cbIsSubsidized').change(function(){
         var inputAmount = $('#' +  $(this).attr('id').replace('isSubsidized','amount'));
-        console.log(inputAmount);
         if ($(this).prop('checked') == true) {
             inputAmount.removeAttr('disabled');
         } else {
             inputAmount.prop('disabled',true);
         }
+    });
+}
+
+function initSaveFormConfirmation(){
+    $(document).ready(function(){
+        var notModified = true;
+        $('input, textarea, select').change(function(){
+            if (notModified) {
+                $(window).bind('beforeunload', function(){ 
+                    return 'You are navigating away. Make sure you have saved you data first.';
+                });
+                notModified = false;
+            }
+        });
+        $('input[type="submit"]').click(function(e){
+            $(window).unbind('beforeunload')
+        });
     });
 }

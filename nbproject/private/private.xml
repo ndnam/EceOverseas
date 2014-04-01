@@ -3,14 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/layouts/profile.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/user/profile_medical.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/user/profile_student.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/user/partial/_item_cca.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/UserController.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/views/user/profile_cca.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/js/script.js</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/StudentController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/ProjectController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/models/LoginForm.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/components/UserIdentity.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/SiteController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/components/WebUser.php</file>
         </group>
     </open-files>
 </project-private>

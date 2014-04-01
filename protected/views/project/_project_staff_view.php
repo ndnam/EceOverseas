@@ -2,6 +2,7 @@
 /* @var $data ProjectStaff */
 /* @var $index integer */
 /* @var $staffRole integer */
+$staff = Staff::model()->with('user')->findByPk($data->staffId);
 ?>
 <tr>
     <td>
@@ -12,7 +13,7 @@
     </td>
     
     <td class="listIndex"><?= $index . '.' ?></td>
-    <td><?= CHtml::link(CHtml::encode($data->staff->fullName), array('staff/view', 'id'=>$data->staff->id)) ?></td>
+    <td><?= CHtml::link(CHtml::encode($staff->fullName), array('user/'.$staff->user->username)) ?></td>
     <td>
         <span class="staffRole"><?= Dictionary::item(Dictionary::TYPE_STAFF_ROLE, $data->role)?></span>
         <?= CHtml::dropDownList(
@@ -24,7 +25,7 @@
     </td>
     
     <?php if ($staffRole == Project::ROLE_LEADER) { 
-        $staffId = $data->staffId;
+        $staffId = $staff->id;
     ?>
         <td>
             <a href="javascript:;" class="btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>

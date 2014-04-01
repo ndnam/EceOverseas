@@ -5,7 +5,6 @@
  *
  * The followings are the available columns in table 'student':
  * @property string $id
- * @property string $profileComplete
  * @property string $firstName
  * @property string $familyName
  * @property integer $gender
@@ -120,28 +119,28 @@ class Student extends CActiveRecord
         /**
          * Validate related model(s)
          * $relatedModel == null | empty array -> return true
-         * @param string|Object $relatedModel
+         * @param string|Object|array $relation
          * @return boolean
          */
-        public function validateRelated($relatedModel) {
+        public function validateRelated($relation) {
+            $firephp = FirePHP::getInstance(true);
             $this->clearErrors();
-            if (is_string($relatedModel)) {
-                $relatedModel = $this->$relatedModel;
+            if (is_string($relation)) {
+                $relation = $this->$relation;
             }
-            if (is_array($relatedModel)) {
+            if (is_array($relation)) {
                 $isValid = true;
-                foreach ($relatedModel as $model) {
+                foreach ($relation as $model) {
                     if (!$this->validateRelated($model)) {
                         $isValid = false;
-//                        $this->addErrors($model->getErrors());
                     }
                 }
                 return $isValid;
-            } else if (!is_null($relatedModel)) {
-                if (!$relatedModel->validate()) {
-//                    $this->addErrors($relatedModel->getErrors());
+            } 
+            if (!is_null($relation)) { // If $relation is object
+                if (!$relation->validate()) {
                     return false;
-                }
+                } 
             }
             return true;
         }
@@ -306,7 +305,7 @@ class Student extends CActiveRecord
         }
         
         public function getFullName() {
-            return $this->firstName . ' ' . $this->familyName;
+            return trim($this->firstName . ' ' . $this->familyName);
         }
         
         /**
@@ -317,14 +316,22 @@ class Student extends CActiveRecord
             if (!$this->validate())
                 array_push ($errors, 'student');
             
-            foreach (['familyMembers','nextOfKin','pastTrips','studentCcas'] as $name) {
-                if (!$this->validateRelated($name)) {
-                    array_push ($errors, $name);
+            foreach (['familyMembers','nextOfKin','pastTrips','studentCcas'] as $relation) {
+                if (!$this->validateRelated($relation)) {
+                    array_push ($errors, $relation);
                 }
             }
             
-            if (empty($this->familyMembers))
+            if (count($this->familyMembers) == 0)
                 array_push ($errors, 'familyMembers');
+            
+            if (in_array('nextOfKin', $errors) || in_array('familyMembers', $errors)) {
+                array_push ($errors, 'family');
+            }
+            
+            if (in_array('studentCcas', $errors) || in_array('pastTrips', $errors)) {
+                array_push ($errors, 'cca');
+            }
             
 //            if (!$this->medicalInfo->validate())
 //                array_push ($errors, 'medicalInfo');
@@ -354,7 +361,6 @@ class Student extends CActiveRecord
 //                    }
 //                }
 //            }
-            
             
             return $errors;
         }

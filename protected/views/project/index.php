@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu = array(
-    array('label'=>'Manage Staffs','url'=>'/EceOverseas/staff/index'),
+    array('label'=>'Manage Project Locations','url'=>'/EceOverseas/project/manageLocations'),
     array('label'=>'Create Project','url'=>'/EceOverseas/project/create'),
 );
 ?>

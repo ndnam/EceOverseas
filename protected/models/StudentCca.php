@@ -129,4 +129,8 @@ class StudentCca extends CActiveRecord
                 $this->created = NULL;
             return true;
         }
+        
+        public function __toString() {
+            return (string)$this->id;
+        }
 }

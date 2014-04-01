@@ -72,6 +72,27 @@ class LoginForm extends CFormModel
 		{
 			$duration=$this->rememberMe ? 3600*24*30 : 0; // 30 days
 			Yii::app()->user->login($this->_identity,$duration);
+                        
+                        // Create profile records if it's the first time user log in
+                        $user = User::model()->findByPk(Yii::app()->user->id);
+                        if ($user->accountType == 1 && !isset($user->staffId)) {
+                            $staff = new Staff;
+                            $staff->save(false);
+                            $user->staffId = $staff->id;
+                            $user->save(false);
+                        } else if ($user->accountType == 2 && !isset($user->studentId)) {
+                            $student = new Student;
+                            $student->save(false);
+                            $user->studentId = $student->id;
+                            $user->save(false);
+                            $medicalInfo = new MedicalInfo;
+                            $medicalInfo->studentId = $student->id;
+                            $medicalInfo->save(false);
+                            $nextOfKin = new NextOfKin;
+                            $nextOfKin->studentId = $student->id;
+                            $nextOfKin->save(false);
+                        }
+                        Yii::app()->user->setState('__userInfo',$user);
 			return true;
 		}
 		else

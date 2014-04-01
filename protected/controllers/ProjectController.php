@@ -27,7 +27,7 @@ class ProjectController extends Controller
                     'users'=>array('@'),
                 ),
                 array('allow',
-                    'actions'=>array('index','view','create','update','delete','changeApplicationStatus','changeStaffRole','addStaff','removeStaff'),
+                    'actions'=>array('index','view','create','update','delete','changeApplicationStatus','changeStaffRole','addStaff','removeStaff','availableStaffs'),
                     'users'=>array('@'),
                     'expression'=>'$user->accountType == 1',
                 ),
@@ -57,6 +57,10 @@ class ProjectController extends Controller
                     'otherProjects'=>$otherProjects,
                 ));
             }
+        }
+        
+        public function actionApplication() {
+            
         }
         
         /**
@@ -130,12 +134,25 @@ class ProjectController extends Controller
                 // Get the current Project's model
                 $project = $this->loadModel($projectStaff->projectId);
                 // Authorize the current user
-                if ($project->getStaffRole(Yii::app()->user->staffId)) {
+                if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
+                    // If the current staff is the only leader of the project
+                    if (ProjectStaff::leaderCount($projectStaff->projectId) == 1) {
+                        $this->returnError('You cannot change you role. A project needs at least one leader.');
+                    }
                     $projectStaff->role = $role;
                     if ($projectStaff->save()) {
+                        // If staff is changing his own role, refresh the page
+                        if ($projectStaff->staffId == Yii::app()->user->staffId) {
+                            header('Content-type: application/json');
+                            echo CJSON::encode(array(
+                                'status'=>1,
+                                'refresh'=>1,
+                            ));
+                            Yii::app()->end();
+                        }
                         $this->returnSuccess();
                     } else {
-                        $this->returnError('Error: Database record cannot be updated');
+                        $this->returnError('Some error prevents staff from being changed');
                     }
                 } else {
                     $this->returnError('You don\'t have permission to perform this task');
@@ -175,7 +192,7 @@ class ProjectController extends Controller
                 $errorIDs = array(); // List of the unsucessfully changed studentapplication's IDs
                 $studentApps = StudentApplication::model()->findAllByPk($stdAppIds);
                 // If some application IDs are not found in database
-                if (count($studentApps) < count($stdAppIds)) { 
+                if (count($studentApps) < count($stdAppIds)) {
                     $foundIDs = array();
                     foreach ($studentApps as $studentApp) {
                         array_push($foundIDs, $studentApp->id);
@@ -218,6 +235,7 @@ class ProjectController extends Controller
                 if ($staffRole == Project::ROLE_LEADER) {
                     try {
                         if ($projectStaffId = $project->addStaff($staffId,$role)){
+                            header('Content-type: application/json');
                             echo CJSON::encode(array(
                                 'status'=>1,
                                 'staffId'=>$staffId,
@@ -250,11 +268,28 @@ class ProjectController extends Controller
             // Get the current Project's model
             $project = $this->loadModel($projectStaff->projectId);
             // Authorize the current user
-            if ($project->getStaffRole(Yii::app()->user->staffId)) {
+            if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
+                // If trying to remove a project leader
+                if ($projectStaff->role == ProjectStaff::ROLE_LEADER) {
+                    $leaderCount = ProjectStaff::leaderCount($projectStaff->projectId);
+                    // If that leader is the current staff, which is the only project leader left
+                    if ($leaderCount == 1) {
+                        $this->returnError('You can not remove yourself from this project. A project need to have at least one leader.');
+                    } 
+                }
                 if ($projectStaff->delete()) {
+                    // If staff is removing himself from the project, refresh the page
+                    if ($projectStaff->staffId == Yii::app()->user->staffId) {
+                        header('Content-type: application/json');
+                        echo CJSON::encode(array(
+                            'status'=>1,
+                            'refresh'=>1,
+                        ));
+                        Yii::app()->end();
+                    }
                     $this->returnSuccess();
                 } else {
-                    $this->returnError('Error: cannot delete record');
+                    $this->returnError('Some error prevents staff from being removed');
                 }
             } else {
                 $this->returnError('You don\'t have permission to perform this task');
@@ -345,6 +380,7 @@ class ProjectController extends Controller
         
         public function actionTest() {
             echo CPasswordHelper::hashPassword('1234');
+            echo '<br>';
         }
         
         /**
@@ -367,5 +403,22 @@ class ProjectController extends Controller
                 $this->returnError('You don\'t have permission to perform this task');
         }
         
-
+        public function actionAvailableStaffs($projectId){
+            header('Content-type: application/json');
+            echo CJSON::encode(Project::getAvailableStaffs($projectId));
+        }
+        
+        /**
+         * Convert an array of objects to dropdown-list-compatible array
+         * @param array $inpput - The input array
+         * @param string $index - Name of the index field
+         * @param string $value - Name of the value field
+         */
+        public static function toDropdownListArray($input,$index,$value) {
+            $array = array();
+            foreach ($input as $item) {
+                $array[$item->$index] = $item->$value;
+            }
+            return $array;
+        }
 }

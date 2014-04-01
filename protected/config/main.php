@@ -42,6 +42,8 @@ return array(
 			'rules'=>array(
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
+				'<controller:\w+>/<action:\w+>/<page:\w+>'=>'<controller>/<action>', //for profile pages
+				'user/<username:\w+>'=>'user/profile', //for user profile page
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
                         'showScriptName'=>false,

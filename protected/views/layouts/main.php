@@ -28,15 +28,25 @@
 	</div><!-- header -->
 
 	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Home', 'url'=>array('/site/index')),
-                                Yii::app()->user->isGuest ? array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest) :
-                                                            array('label'=>'Projects', 'url'=>array(Yii::app()->user->accountType == User::TYPE_STUDENT ? '/student/index' : 'project/index')),
-                                array('label'=>'Profile ('.Yii::app()->user->name.')', 'url'=>array('/user/profile'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Logout', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-			),
-		)); ?>
+		<?php 
+                $menuItems = array(
+                    array('label' => 'Home', 'url' => array('/site/index')),
+                );
+                if (Yii::app()->user->isGuest) {
+                    array_push($menuItems, array('label'=>'Login', 'url'=>array('/site/login')));
+                } else {
+                    $user = User::model()->with('student','staff')->findByPk(Yii::app()->user->id);
+                    $fullName = $user->accountType == User::TYPE_STUDENT ? $user->student->fullName : $user->staff->fullName;
+                    if (strlen($fullName) > 0) 
+                        $fullName = '('.$fullName.')';
+                    array_push($menuItems,
+                        array('label'=>'Projects', 'url'=>array($user->accountType == User::TYPE_STUDENT ? '/student/publicProjects' : 'project/index')),
+                        array('label'=>'Profile '.$fullName, 'url'=>array('/user/'.$user->username)),
+                        array('label'=>'Logout', 'url'=>array('/site/logout'))
+                    );
+                }
+                $this->widget('zii.widgets.CMenu',array('items'=>$menuItems,)); 
+                ?>
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(

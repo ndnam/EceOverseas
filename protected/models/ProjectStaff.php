@@ -122,4 +122,11 @@ class ProjectStaff extends CActiveRecord
             }
             return true;
         }
+        
+        public static function leaderCount($projectId) {
+            return ProjectStaff::model()->countByAttributes(array(
+                'projectId'=>$projectId,
+                'role'=>ProjectStaff::ROLE_LEADER,
+            ));
+        }
 }

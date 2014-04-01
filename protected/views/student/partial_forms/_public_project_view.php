@@ -3,7 +3,7 @@
 ?>
 <div class="view">
 
-        <?php echo CHtml::link(CHtml::encode($project->title), array('project', 'id'=>$project->id)); ?>
+        <?php echo CHtml::link(CHtml::encode($project->title), array('/project/'.$project->id)); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($project->getAttributeLabel('location')); ?>:</b>
@@ -17,4 +17,6 @@
 	<b><?php echo CHtml::encode($project->getAttributeLabel('status')); ?>:</b>
 	<?php echo Dictionary::item(Dictionary::TYPE_PROJECT_STATUS,$project->status); ?>
 	<br />
+        
+        <?php echo CHtml::link('Apply', array('/student/apply/'.$project->id)); ?>
 </div>

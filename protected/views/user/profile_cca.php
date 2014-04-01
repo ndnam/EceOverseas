@@ -62,7 +62,7 @@ $form=$this->beginWidget('CActiveForm', array(
 
 
 <?php if (isset($pastTrips)) { ?>
-    <div class="ccas list-module">
+    <div class="pasttrips list-module">
         <div class="module-title">Past Trips</div>
         <div class="module-list">
             <table class="module-table">
@@ -114,5 +114,4 @@ $this->endWidget();
 $(document).ready(function(){
     $('input.required, textarea.required, input.number').focusout();
 });
-
 </script>

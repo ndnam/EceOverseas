@@ -52,7 +52,7 @@ class SiteController extends Controller
 	public function actionIndex()
 	{
 		if (Yii::app()->user->accountType == User::TYPE_STUDENT){
-                    $this->redirect(array('student/index'));
+                    $this->redirect(array('student/publicProjects'));
                 } else {
                     $this->redirect(array('project/index'));
                 }
@@ -119,7 +119,7 @@ class SiteController extends Controller
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
 				if (Yii::app()->user->accountType == User::TYPE_STUDENT){
-                                    $this->redirect(array('student/index'));
+                                    $this->redirect(array('student/publicProjects'));
                                 } else {
                                     $this->redirect(array('project/index'));
                                 }

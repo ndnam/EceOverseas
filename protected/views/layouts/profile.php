@@ -1,10 +1,14 @@
 <?php /* @var $this Controller */ 
 
+$student = $this->eagerLoadStudent();
+$username = Yii::app()->user->username;
+$errors = $student->profileErrors;
+
 $this->menu = array(
-    array('label'=>'Student Info','url'=>Yii::app()->baseUrl.'/user/profile','itemOptions'=>array('class'=>'menu-student-info')),
-    array('label'=>'Medical History','url'=>Yii::app()->baseUrl.'/user/profile?page=medical'),
-    array('label'=>'Co-Curriculum activities','url'=>Yii::app()->baseUrl.'/user/profile?page=cca'),
-    array('label'=>'Family Details','url'=>Yii::app()->baseUrl.'/user/profile?page=family'),
+    array('label'=>'Student Info','url'=>Yii::app()->baseUrl.'/user/'.$username,'itemOptions'=>array('class'=>in_array('student',$errors)?'error':'')),
+    array('label'=>'Medical History','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=medical','itemOptions'),
+    array('label'=>'Co-Curriculum activities','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=cca','itemOptions'=>array('class'=>in_array('cca',$errors)?'error':'')),
+    array('label'=>'Family Details','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=family','itemOptions'=>array('class'=>in_array('family',$errors)?'error':'')),
 );
 ?>
 
@@ -31,23 +35,7 @@ $this->menu = array(
 <?php $this->endContent(); ?>
 
 <script>
-$(document).ajaxSuccess(function(event,request,options) {
-    console.log(request);
-});
-$(document).ready(function(){
-    var notModified = true;
-    $('input, textarea, select').change(function(){
-        if (notModified) {
-            $(window).bind('beforeunload', function(){ 
-                return 'You are navigating away. Make sure you have saved you data first.';
-            });
-            notModified = false;
-        }
-    });
-    $('input[type="submit"]').click(function(e){
-        $(window).unbind('beforeunload')
-    })
-});
+initSaveFormConfirmation();
 </script>
 
 

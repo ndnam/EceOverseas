@@ -208,4 +208,37 @@ class Project extends CActiveRecord
             }
             return $isOk && parent::beforeDelete();
         }
+        
+        /**
+         * Get the projects that a certain student has applied
+         * @param integer $studentId
+         */
+        public static function getProjectByStudentId($studentId){
+            $appliedProjects = Project::model()->with(array(
+                'studentapplications'=>array(
+                    'select'=>false,
+                    'joinType'=>'INNER JOIN',
+                    'condition'=>'studentapplications.studentId=:studentId',
+                    'params'=>array(
+                        ':studentId'=>$studentId,
+                    )
+                )
+            ))->findAll();
+            return $appliedProjects;
+        }
+        
+        public static function getAvailableStaffs($projectId) {
+            // Get list of staffs that haven't been assigned to the project
+            $staffs = Staff::model()->findAllBySql(
+                'SELECT * FROM staff WHERE id NOT IN (SELECT staffId FROM projectstaff WHERE projectId = :projectId)',
+                array(':projectId'=>$projectId)
+            );
+            // Remove the staffs with incomplete profile
+            foreach ($staffs as $i=>$staff) {
+                if (!$staff->validate()) {
+                    unset($staffs[$i]);
+                }
+            }
+            return $staffs;
+        }
 }

@@ -85,15 +85,17 @@ $this->menu = array(
             <td></td>
             <td></td>
             <td>
-                <?= CHtml::dropDownList('staffSelect', null, Staff::getStaffList()) ?>
+                <?= CHtml::dropDownList('staffSelect', null, array_merge(array('Select Staff'), 
+                        ProjectController::toDropdownListArray(Project::getAvailableStaffs($model->id), 'id', 'fullName'))
+                )?>
             </td>
             <td>
                 <?= CHtml::dropDownList(
                         'roleSelect', 
                         null, 
                         Dictionary::items(Dictionary::TYPE_STAFF_ROLE),
-                        ['class'=>'roleSelect'])
-                ?>
+                        ['class'=>'roleSelect']
+                )?>
             </td>
             <td>
                 <a href="javascript:;" id="btnAddStaff">+ Add Staff</a>

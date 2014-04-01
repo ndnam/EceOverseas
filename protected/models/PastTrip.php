@@ -45,7 +45,6 @@ class PastTrip extends CActiveRecord
 			array('programName, duration, capacity', 'filter', 'filter'=>'trim'),
 			array('programName, duration, capacity', 'required'),
 			array('isSubsidized, amount, country', 'numerical', 'integerOnly'=>true),
-			array('amount', 'numerical', 'min'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, studentId, programName, country, duration, capacity, isSubsidized, amount, created, modified', 'safe', 'on'=>'search'),
@@ -139,5 +138,9 @@ class PastTrip extends CActiveRecord
             if ($this->isNewRecord) 
                 $this->created = NULL;
             return true;
+        }
+        
+        public function __toString() {
+            return (string)$this->id;
         }
 }

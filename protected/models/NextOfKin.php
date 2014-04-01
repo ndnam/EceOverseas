@@ -38,9 +38,6 @@ class NextOfKin extends CActiveRecord
 		return array(
 			array('fullName, relationship, email, mobilePhone, officePhone, homePhone', 'filter', 'filter'=>'trim'),
 			array('fullName, relationship', 'required'),
-			array('fullName', 'length', 'max'=>100),
-			array('relationship, email', 'length', 'max'=>50),
-			array('mobilePhone, officePhone, homePhone', 'length', 'max'=>20),
 			array('mobilePhone, officePhone, homePhone', 'match', 'pattern'=>'/^\d+$/'),
                         array('email','email'),
 			// The following rule is used by search().
@@ -140,7 +137,7 @@ class NextOfKin extends CActiveRecord
         public function beforeValidate() {
             $this->clearErrors();
             if (empty($this->email) && empty($this->mobilePhone) && empty($this->officePhone) && empty($this->homePhone)) {
-                $this->addError('mobilePhone', 'You need to provide at least one contact method');
+                $this->addError('contactMethod', 'You need to provide at least one contact method');
                 return false;
             }
             return parent::beforeValidate();
