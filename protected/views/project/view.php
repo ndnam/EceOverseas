@@ -29,6 +29,8 @@ $this->menu = array(
             <th></th>
             <th>Name</th>
             <th>Status</th>
+            <th>Using PSEA</th>
+            <th>Support Statement</th>
         </tr>
         <?php 
         $i = 0;
@@ -45,7 +47,7 @@ $this->menu = array(
             <tr>
                 <td colspan="4" class="btns"> 
                     <a href="javascript:;" id="btnSelectAllApps">Select all</a>
-                    <a href="javascript:;" id="btnClearApps">Clear</a>
+                    <a href="javascript:;" id="btnClearApps">Clear selection</a>
                     <br/>
                     <a href="javascript:;" class="btnChangeAppStt" id="2Shortlisted">Shortlist</a>
                     <a href="javascript:;" class="btnChangeAppStt" id="3Confirmed">Confirm</a>

@@ -39,8 +39,8 @@ class UserController extends Controller {
         } else {
             $student = Student::model()->with('medicalInfo','studentCcas','pastTrips','nextOfKin','familyMembers')
                        ->findByPk(Yii::app()->user->studentId);
-            header('Content-type: application/json');
         }
+        header('Content-type: application/json');
         echo CJSON::encode($student->profileErrors);
     }
 

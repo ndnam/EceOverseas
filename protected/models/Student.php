@@ -123,7 +123,6 @@ class Student extends CActiveRecord
          * @return boolean
          */
         public function validateRelated($relation) {
-            $firephp = FirePHP::getInstance(true);
             $this->clearErrors();
             if (is_string($relation)) {
                 $relation = $this->$relation;
@@ -178,7 +177,7 @@ class Student extends CActiveRecord
 			'issuingCountry' => array(self::BELONGS_TO, 'DictCountry', 'issuingCountry'),
 			'projects' => array(self::MANY_MANY, 'Project', 'studentapplication(studentId,projectId)'),
 			'studentCcas' => array(self::HAS_MANY, 'StudentCca', 'studentId'),
-                        'user' => array(self::HAS_ONE,'User','staffId'),
+                        'user' => array(self::HAS_ONE,'User','studentId'),
 		);
 	}
 

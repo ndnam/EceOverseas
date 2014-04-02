@@ -23,9 +23,6 @@
     <td>
         <a href="javascript:;" class="btn-delete-record" onclick="deleteMember($(this))">Delete</a>
     </td>
-    <td>
-        <?= $familyMember->validate()?>
-    </td>
 </tr>
 <script>
 $(document).ready(function(){

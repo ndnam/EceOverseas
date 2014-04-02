@@ -7,8 +7,10 @@ $this->breadcrumbs=array(
 
 $this->menu = array(
     array('label'=>'Manage Project Locations','url'=>Yii::app()->baseUrl.'/location/admin'),
-    array('label'=>'Create Project','url'=>Yii::app()->baseUrl.'/project/create'),
 );
+if (Yii::app()->user->staff->validate()) {
+    array_push($this->menu, array('label'=>'Create Project','url'=>Yii::app()->baseUrl.'/project/create'));
+}
 ?>
 
 <h2>My projects</h2>

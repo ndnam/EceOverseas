@@ -209,6 +209,7 @@ class ProjectController extends Controller
                 if (count($errorIDs) == 0) {
                     $this->returnSuccess();
                 } else {
+                    header('Content-type: application/json');
                     echo CJSON::encode(array(
                         'status'=>0,
                         'errorIDs'=>$errorIDs,
@@ -320,7 +321,6 @@ class ProjectController extends Controller
         public function actionCreate() {
             $project = new Project;
             $location = new Location;
-            $firephp = FirePHP::getInstance(true);
             
             //Ajax validation
             if(isset($_POST['ajax']) && $_POST['ajax']==='project-create-form'){
@@ -345,13 +345,9 @@ class ProjectController extends Controller
                     $projectStaff->staffId = Yii::app()->user->staffId;
                     $projectStaff->role = Project::ROLE_LEADER;
                     $projectStaff->save();
-                    $firephp->log($project->attributes);
                     $this->redirect(array('/project'));
                 }
             }
-            
-            $firephp->log($project->attributes);
-            $firephp->log($location->attributes);
             
             $this->render('create',array(
                 'project'=>$project,

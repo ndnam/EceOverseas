@@ -13,3 +13,7 @@ input.error1, input.error2, input.error3  {
 li.error {
     background: #FF0055;
 }
+
+a.error {
+    color: red;
+}

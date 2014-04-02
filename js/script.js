@@ -136,8 +136,7 @@ $(document).ready(function(){
             {stdAppIds:stdAppIds, status:$(this).attr('id').charAt(0)},
             function(data){
                 console.log(data);
-                var response = $.parseJSON(data);
-                if (response.status == 1) {
+                if (data.status == 1) {
                     checkedBoxes.each(function(){
                         $(this).parents('tr').find('.app-status').text(newStatus);
                     });

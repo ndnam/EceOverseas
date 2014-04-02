@@ -67,7 +67,6 @@ class StudentController extends Controller {
      * @param int $step
      */
     public function actionApplyOld($step = 1) {
-        $firephp = FirePHP::getInstance(true);
 
         if (isset($_SESSION['Student']) && ($student = $_SESSION['Student']) instanceof Student) {
             $student = $_SESSION['Student'];
@@ -178,7 +177,6 @@ class StudentController extends Controller {
 
             case 4:
                 if (isset($student)) {
-                    $firephp->log($student->nextOfKin);
                     if (is_null($student->nextOfKin))
                         $student->nextOfKin = new NextOfKin;
                     // Check if this is a postback
@@ -241,7 +239,6 @@ class StudentController extends Controller {
                 break;
 
             case 6:
-                $firephp->log($_SESSION['Project']);
                 if (isset($student)) {
                     // Check if this is a postback
                     if (Yii::app()->request->isPostRequest) {
