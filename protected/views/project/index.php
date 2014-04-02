@@ -6,8 +6,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu = array(
-    array('label'=>'Manage Project Locations','url'=>'/EceOverseas/project/manageLocations'),
-    array('label'=>'Create Project','url'=>'/EceOverseas/project/create'),
+    array('label'=>'Manage Project Locations','url'=>Yii::app()->baseUrl.'/location/admin'),
+    array('label'=>'Create Project','url'=>Yii::app()->baseUrl.'/project/create'),
 );
 ?>
 
