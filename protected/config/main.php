@@ -57,8 +57,8 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=ece_overseas',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'ece_overseas',
+			'password' => 'Password1',
 			'charset' => 'utf8',
 		),
 		'errorHandler'=>array(

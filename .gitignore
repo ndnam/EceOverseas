@@ -1,3 +1,15 @@
+################
+## PHP Website using Yii Framework
+################
+assets/*
+protected/runtime/*
+protected/data/*.db
+protected/tests/report/*
+.idea
+.buildpath
+.project
+.settings
+
 #################
 ## Eclipse
 #################
@@ -27,7 +39,6 @@ local.properties
 
 # PDT-specific
 .buildpath
-
 
 #################
 ## Visual Studio
@@ -164,6 +175,7 @@ UpgradeLog*.htm
 # SQL Server files
 App_Data/*.mdf
 App_Data/*.ldf
+
 
 #############
 ## Windows detritus
