@@ -14,9 +14,5 @@
 	<?php echo CHtml::encode($project->deadline); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($project->getAttributeLabel('status')); ?>:</b>
-	<?php echo Dictionary::item(Dictionary::TYPE_PROJECT_STATUS,$project->status); ?>
-	<br />
-        
         <?php echo CHtml::link('Apply', array('/student/apply/'.$project->id)); ?>
 </div>

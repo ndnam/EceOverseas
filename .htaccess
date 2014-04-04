@@ -2,7 +2,7 @@ Options +FollowSymlinks
 IndexIgnore */*
 
 RewriteEngine on
-RewriteBase /~qj/EceOverseas/
+#RewriteBase /~qj/EceOverseas/
 
 # if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -167,7 +167,7 @@ $(document).ready(function(){
     initStaffEditBtns();
     
     // Delete student application
-    $('#btnDeleteApp').click(function(){
+    $('.btn-del-app').click(function(){
         if (confirm('Do you want to delete your application for this project?')) {
             window.location.href = '/EceOverseas/student/deleteApp/' + $(this).attr('appId');
         }

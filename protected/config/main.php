@@ -5,12 +5,14 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'EceOverseas Project',
+        'theme'=>'bootstrap',
 
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('log','bootstrap'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -26,6 +28,9 @@ return array(
 			'password'=>'1234',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
+                        'generatorPaths'=>array(
+                            'bootstrap.gii',
+                        ),
 		),
 	),
 
@@ -33,7 +38,7 @@ return array(
 	'components'=>array(
 		'user'=>array(
 			// enable cookie-based authentication
-			'allowAutoLogin'=>true,
+			'allowAutoLogin'=>false,
                         'class'=>'WebUser',
 		),
 		// uncomment the following to enable URLs in path-format
@@ -57,8 +62,8 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=ece_overseas',
 			'emulatePrepare' => true,
-			'username' => 'ece_overseas',
-			'password' => 'Password1',
+			'username' => 'root',
+			'password' => '',
 			'charset' => 'utf8',
 		),
 		'errorHandler'=>array(
@@ -80,9 +85,12 @@ return array(
                                 */
 			),
 		),
-            'session'=>array(
-                'timeout'=>600,
-            ),
+                'session'=>array(
+                    'timeout'=>600,
+                ),
+                'bootstrap'=>array(
+                    'class'=>'bootstrap.components.Bootstrap',
+                ),
 	),
 
 	// application-level parameters that can be accessed

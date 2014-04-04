@@ -3,6 +3,19 @@
     Author     : Ndnam
 */
 
+.cell {
+    width: 130px;
+    margin-left: 30px
+}
+
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
 input.error1, input.error2, input.error3  {
     border: 1px solid red;
     -moz-box-shadow:    0px 0px 3px 0px #f00;
@@ -10,10 +23,65 @@ input.error1, input.error2, input.error3  {
     box-shadow:         0px 0px 3px 0px #f00;
 }
 
-li.error {
+#sidebar li.error a {
     background: #FF0055;
+    color: #fff;
+}
+
+#sidebar li.error a:hover {
+    /*color: #0088CC;*/
+    background: #FF4466;
 }
 
 a.error {
     color: red;
 }
+
+.first {
+    margin-left: 0px;
+}
+
+.view {
+    box-shadow: 2px 2px 7px #888888;
+    border-radius: 4px;
+    padding: 10px 15px;
+    width: 50%;
+    position: relative;
+    margin: 0 0 20px;
+}
+
+.btn-apply-project {
+    position: absolute;
+    right: 20px;
+    top: 25px;
+}
+
+.btn-del-app {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+}
+
+.grid-form table{
+    width: 800px;
+    margin-bottom: 10px;
+}
+
+.grid-form th, .grid-form td {
+    height: 20px;
+}
+
+.grid-form input, .grid-form textarea, .grid-form select {
+    margin: 0;
+}
+
+.help-block {
+    padding-top: 5px;
+}
+
+
+
+
+
+
+
