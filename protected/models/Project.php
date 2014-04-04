@@ -59,10 +59,10 @@ class Project extends CActiveRecord
 		);
 	}
         
-        public function behaviors() {
-              return array( 'EAdvancedArBehavior' => array(
-                    'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
+//        public function behaviors() {
+//              return array( 'EAdvancedArBehavior' => array(
+//                    'class' => 'application.extensions.EAdvancedArBehavior'));
+//        }
 
 	/**
 	 * @return array relational rules.

@@ -28,7 +28,7 @@
         echo $form->textField($pastTrip,"[$id]amount", $htmlOptions); ?>
     </td>
     <td>
-        <a href="javascript:;" class="btn btn-danger btn-delete-record" onclick="deletePastTrip($(this))">Delete</a>
+        <a href="javascript:;" class="btn btn-warning btn-delete-record" onclick="deletePastTrip($(this))">Delete</a>
     </td>
 </tr>
 <script>

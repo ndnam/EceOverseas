@@ -11,9 +11,12 @@ $staff = Staff::model()->with('user')->findByPk($data->staffId);
         <?php 
         }?>
     </td>
-    
-    <td class="listIndex"><?= $index . '.' ?></td>
-    <td><?= CHtml::link(CHtml::encode($staff->fullName), array('user/'.$staff->user->username)) ?></td>
+    <td class="listIndex">
+        <?= $index . '.' ?>
+    </td>
+    <td>
+        <?= CHtml::link(CHtml::encode($staff->fullName), array('user/'.$staff->user->username)) ?>
+    </td>
     <td>
         <span class="staffRole"><?= Dictionary::item(Dictionary::TYPE_STAFF_ROLE, $data->role)?></span>
         <?= CHtml::dropDownList(
@@ -27,10 +30,10 @@ $staff = Staff::model()->with('user')->findByPk($data->staffId);
     <?php if ($staffRole == Project::ROLE_LEADER) { 
         $staffId = $staff->id;
     ?>
-        <td>
-            <a href="javascript:;" class="btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>
-            <a href="javascript:;" class="btnEditStaff" id="btnEditStaff<?=$staffId ?>">Edit</a>
-            <a href="javascript:;" class="btnRemoveStaff" prjStaffId="<?= $data->id ?>" id="btnRemoveStaff<?=$staffId ?>">Remove</a>
+        <td class="btn-group">
+            <a href="javascript:;" class="btn btn-info btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>
+            <a href="javascript:;" class="btn btn-info btnEditStaff" id="btnEditStaff<?=$staffId ?>">Edit</a>
+            <a href="javascript:;" class="btn btn-warning btnRemoveStaff" prjStaffId="<?= $data->id ?>" id="btnRemoveStaff<?=$staffId ?>">Remove</a>
         </td>
     <?php 
     }?>

@@ -21,7 +21,7 @@
         <?php echo $form->textArea($studentCca,"[$id]description",array('style'=>'height:22px;width:225px')); ?>
     </td>
     <td>
-        <a href="javascript:;" class="btn btn-danger btn-delete-record" onclick="deleteCCA($(this))">Delete</a>
+        <a href="javascript:;" class="btn btn-warning btn-delete-record" onclick="deleteCCA($(this))">Delete</a>
     </td>
     
     <script>

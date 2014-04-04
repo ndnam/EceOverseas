@@ -2,79 +2,84 @@
 /* @var $this StudentController */
 /* @var $project Project */
 /* @var $application Application */
+
+$this->breadcrumbs=array(
+	'Project'=>array('/student/publicProjects'),
+        'Apply'
+);
 ?>
 
-<h1>Apply for <?= $project->title ?></h1>
+<h2><center>Apply for <?= $project->title ?></center></h2>
 
-<h2>Project Info</h2>
-
-<div class="form">
-
-    <div class="row">
-        <label>Title</label>
-        <p><?= CHtml::encode($project->title) ?></p>
-    </div>
-
-    <div class="row">
-        <label>Description</label>
-        <p><?= CHtml::encode($project->description) ?></p>
-    </div>
-
-    <div class="row">
-        <label>Start Date</label>
-        <p><?= CHtml::encode($project->startDate) ?></p>
-    </div>
-
-    <div class="row">
-        <label>End Date</label>
-        <p><?= CHtml::encode($project->endDate) ?></p>
-    </div>
-
-    <div class="row">
-        <label>Team Size</label>
-        <p><?= CHtml::encode($project->teamSize) ?></p>
-    </div>
-
-    <div class="row">
-        <label>Deadline</label>
-        <p><?= CHtml::encode($project->deadline) ?></p>
-    </div>
-
-    <div class="row">
-        <label>Location</label>
-        <p><?= CHtml::encode($project->location->name) ?></p>
-    </div>
-
-</div><!-- form -->
-<div class="clear"></div>
-
-<h2>Application form</h2>
-
-<div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	'id'=>'application-form',
-	'enableAjaxValidation'=>false,
+        'type'=>'horizontal',
 )); ?>
 
-	<div class="row">
-		<?php echo $form->labelEx($application,'usingPsea'); ?>
-		<?php echo $form->checkBox($application,'usingPsea'); ?>
-	</div>
+<fieldset style="margin-bottom: 40px;">
+ 
+    <legend>Project Info</legend>
 
-	<div class="row">
-		<?php echo $form->labelEx($application,'support'); ?>
-		<?php echo $form->textArea($application,'support'); ?>
-	</div>
-
-        <div class="row">
-                <input type="submit" value="Save" name="btnSave" style="margin-left: 230px;">
+    <div class="control-group">
+        <label class="control-label">Title</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->title) ?></p>
         </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Description</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->description) ?></p>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Start Date</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->startDate) ?></p>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">End Date</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->endDate) ?></p>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Team Size</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->teamSize) ?></p>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Deadline</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->deadline) ?></p>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Location</label>
+        <div class="controls">
+            <p class="help-block"><?= CHtml::encode($project->location->name) ?></p>
+        </div>
+    </div>
 
+</fieldset>
+
+<fieldset style="margin-bottom: 40px;">
+ 
+    <legend>Application form</legend>
+
+    <?= $form->checkBoxRow($application, 'usingPsea'); ?>
+    <?= $form->textAreaRow($application, 'support',array('maxlength'=>500)); ?>
+
+    <div class="form-actions">
+        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Save')); ?>
+    </div>
+</fieldset>
 <?php $this->endWidget(); ?>
-
-</div>
-
-<script>
-initSaveFormConfirmation();
-</script>

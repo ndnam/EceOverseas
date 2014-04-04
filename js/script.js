@@ -77,40 +77,40 @@ $(document).ready(function(){
     }
     
     // Project edit form
-    $('.btn-edit').click(function(){
-        $(this).parents('.form').find('input[type="text"], select, textarea').show();
-        $(this).parents('.form').find('p.attr-value').hide();
-        $('.btn-update, .btn-cancel').show();
+    $('#btn-edit-project').click(function(){
+        $(this).parents('form').find('input[type="text"], select, textarea').show();
+        $(this).parents('form').find('p.attr-value').hide();
+        $('#btn-update-project, #btn-cancel').show();
         $(this).hide();
     });
     
-    $('.btn-update').click(function(){
+    $('#btn-update-project').click(function(){
         $this = $(this);
         //Perform ajax update here
         $.post('',$('#project-edit-form').serialize(),function(data){
             if (data.status == 1) {
-                $this.parents('.form').find('input[type="text"], textarea').each(function(){
-                    $(this).parents('.row').find('p.attr-value').text($(this).val());
+                $this.parents('form').find('input[type="text"], textarea').each(function(){
+                    $(this).parents('.controls').find('p.attr-value').text($(this).val());
                 });
-                $this.parents('.form').find('select').each(function(){
-                    $(this).parents('.row').find('p.attr-value').text($(this).find('option:selected').text());
+                $this.parents('form').find('select').each(function(){
+                    $(this).parents('.controls').find('p.attr-value').text($(this).find('option:selected').text());
                 });
-                $this.parents('.form').find('input[type="text"], select, textarea').hide();
-                $this.parents('.form').find('p.attr-value').show();
-                $('.btn-update, .btn-cancel').hide();
-                $('.btn-edit').show();
-                $('h1#project-title').text($('#Project_title').val());
+                $this.parents('form').find('input[type="text"], select, textarea').hide();
+                $this.parents('form').find('p.attr-value').show();
+                $('#btn-update-project, #btn-cancel').hide();
+                $('#btn-edit-project').show();
+                $('h2#project-title').text($('#Project_title').val());
             } else {
                 alert('Cannot save changes');
             }
         },'json');
     });
     
-    $('.btn-cancel').click(function(){
-        $(this).parents('.form').find('input[type="text"], select, textarea').hide();
-        $(this).parents('.form').find('p.attr-value').show();
-        $('.btn-update, .btn-cancel').hide();
-        $('.btn-edit').show();
+    $('#btn-cancel').click(function(){
+        $(this).parents('form').find('input[type="text"], select, textarea').hide();
+        $(this).parents('form').find('p.attr-value').show();
+        $('#btn-update-project, #btn-cancel').hide();
+        $('#btn-edit-project').show();
     });
     
     // Student application list

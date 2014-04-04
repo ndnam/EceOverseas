@@ -21,7 +21,7 @@
         <?php echo $form->textField($familyMember,"[$id]monthlyIncome",array('class'=>'required number','style'=>'width:100px')); ?>
     </td>
     <td>
-        <a href="javascript:;" class="btn btn-danger btn-delete-record" onclick="deleteMember($(this))">Delete</a>
+        <a href="javascript:;" class="btn btn-warning btn-delete-record" onclick="deleteMember($(this))">Delete</a>
     </td>
 </tr>
 <script>

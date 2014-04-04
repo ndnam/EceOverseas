@@ -8,118 +8,42 @@ $this->breadcrumbs=array(
 	'Create Project',
 );
 ?>
-<h1>Create new project</h1>
+<h2><center>Create new project</center></h2>
 
 <div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'project-create-form',
-	'enableAjaxValidation'=>true,
-)); ?>
-
-	<?php echo $form->errorSummary($project); ?>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'title'); ?>
-		<?php echo $form->textField($project,'title'); ?>
-		<?php echo $form->error($project,'title'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'description'); ?>
-		<?php echo $form->textArea($project,'description'); ?>
-		<?php echo $form->error($project,'description'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'startDate'); ?>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
-                    'name'=>'Project[startDate]',
-                    'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
-                    ),
-                    'value'=>$project->startDate,
-                )); ?>
-		<?php echo $form->error($project,'startDate'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'endDate'); ?>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
-                    'name'=>'Project[endDate]',
-                    'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
-                    ),
-                    'value'=>$project->endDate,
-                )); ?>
-		<?php echo $form->error($project,'endDate'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'teamSize'); ?>
-		<?php echo $form->textField($project,'teamSize'); ?>
-		<?php echo $form->error($project,'teamSize'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'deadline'); ?>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
-                    'name'=>'Project[deadline]',
-                    'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
-                    ),
-                    'value'=>$project->deadline,
-                )); ?>
-		<?php echo $form->error($project,'deadline'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($project,'locationId'); ?>
-		<?php echo $form->dropdownList($project,'locationId',Location::loadLocations()); ?>
-	</div>
     
-        <div class="row">
-            <div class="cell"><p></p></div>
-            <div class="cell">
-                <a href="javascript:;" id="btnNewLocation">New location</a>
-                <a href="javascript:;" id="btnCancel" class="hide">Cancel</a>
+<?php
+$form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+	'id'=>'project-create-form',
+        'type'=>'horizontal',
+	'enableAjaxValidation'=>true,
+        'enableClientValidation'=>true,
+)); 
+?>
+        <?= $form->textFieldRow($project, 'title'); ?>
+        <?= $form->textAreaRow($project, 'description'); ?>
+        <?= $form->datepickerRow($project,'startDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
+        <?= $form->datepickerRow($project,'endDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
+        <?= $form->textAreaRow($project, 'teamSize'); ?>
+        <?= $form->datepickerRow($project,'deadline',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
+        <?= $form->dropDownListRow($project, 'locationId',Location::loadLocations()); ?>
+
+        <div class="control-group">
+            <div style="margin-left: 180px" class="">
+                <a href="javascript:;" class="btn btn-info" id="btnNewLocation">New location</a>
+                <a href="javascript:;" class="btn btn-info hide" id="btnCancel" >Cancel</a>
             </div>
         </div>
     
         <div class="locationForm hide">
-            <div class="row">
-                    <?php echo $form->labelEx($location,'name'); ?>
-                    <?php echo $form->textField($location,'name',array('disabled'=>true)); ?>
-                    <?php echo $form->error($location,'name'); ?>
-            </div>
-
-            <div class="row">
-                    <?php echo $form->labelEx($location,'city'); ?>
-                    <?php echo $form->textField($location,'city',array('disabled'=>true)); ?>
-                    <?php echo $form->error($location,'city'); ?>
-            </div>
-
-            <div class="row">
-                    <?php echo $form->labelEx($location,'country'); ?>
-                    <?php echo $form->textField($location,'country',array('disabled'=>true)); ?>
-                    <?php echo $form->error($location,'country'); ?>
-            </div>
+            <?= $form->textFieldRow($location, 'name', array('disabled'=>true)); ?>
+            <?= $form->textFieldRow($location, 'city', array('disabled'=>true)); ?>
+            <?= $form->textFieldRow($location, 'country', array('disabled'=>true)); ?>
         </div>
-             
 
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Submit'); ?>
-	</div>
+        <div class="form-actions">
+            <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Submit')); ?>
+        </div>
 
 <?php $this->endWidget(); ?>
 
