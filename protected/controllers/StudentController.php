@@ -328,8 +328,13 @@ class StudentController extends Controller {
         $publicProjects = Project::model()->findAll('status=' . Project::STATUS_PUBLIC);
         $appliedProjects = Project::getProjectByStudentId(Yii::app()->user->studentId);
         $unappliedProjects = array_diff($publicProjects, $appliedProjects);
+        
+        $student = UserController::loadStudent();
+        $profileIncomplete = count($student->profileErrors) > 0;
+                
         $this->render('public_projects', array(
             'projects' => $unappliedProjects,
+            'profileIncomplete' => $profileIncomplete,
         ));
     }
 
@@ -349,7 +354,7 @@ class StudentController extends Controller {
      */
     public function actionDeleteApp($id) {
         StudentApplication::model()->deleteByPk($id);
-        $this->redirect(array('student/appliedProjects'));
+        $this->redirect(array('student/applications'));
     }
 
     /**

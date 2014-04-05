@@ -45,7 +45,7 @@ a.error {
     box-shadow: 2px 2px 7px #888888;
     border-radius: 4px;
     padding: 10px 15px;
-    width: 50%;
+    width: 400px;
     position: relative;
     margin: 0 0 20px;
 }
@@ -56,7 +56,7 @@ a.error {
     top: 25px;
 }
 
-.btn-del-app {
+.box .btn-del-app {
     position: absolute;
     right: 20px;
     bottom: 15px;

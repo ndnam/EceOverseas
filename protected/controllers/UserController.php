@@ -63,13 +63,7 @@ class UserController extends Controller {
                 ));
             } else {
                 /* @var $student Student */
-                if (isset($_SESSION['student'])) {
-                    $student = $_SESSION['student'];
-                } else {
-                    $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk($user->studentId);
-    //                $student = $user->student;
-                    $_SESSION['student'] = $student;
-                }
+                $student = UserController::loadStudent();
                 switch ($page) {
                     case 'general':
                         //Ajax validation
@@ -80,11 +74,11 @@ class UserController extends Controller {
                         if (isset($_POST['Student'])) {
                             $student->attributes = $_POST['Student'];
                             $student->isNewRecord = false;
-                            $student->save(false);
+                            $student->save();
                         } 
-                        if ($student->created != $student->modified) { //The record has been modified
-                            $student->validate();
-                        }
+//                        if ($student->created != $student->modified) { //The record has been modified
+//                            $student->validate();
+//                        }
                         $this->render('profile_student', array(
                             'student' => $student,
                         ));
@@ -98,11 +92,11 @@ class UserController extends Controller {
                         if (isset($_POST['MedicalInfo'])) {
                             $medicalInfo->attributes = $_POST['MedicalInfo'];
                             $medicalInfo->isNewRecord = false;
-                            $medicalInfo->save(false);
+                            $medicalInfo->save();
                         } 
-                        if ($medicalInfo->created != $medicalInfo->modified) { //The record has been modified
-                            $medicalInfo->validate();
-                        }
+//                        if ($medicalInfo->created != $medicalInfo->modified) { //The record has been modified
+//                            $medicalInfo->validate();
+//                        }
                         $this->render('profile_medical', array(
                             'medicalInfo' => $medicalInfo,
                         ));
@@ -118,7 +112,7 @@ class UserController extends Controller {
                                 $discardedCca->delete();
                             }
                             foreach ($newCcas as $newCca) {
-                                $newCca->save(false);
+                                $newCca->save();
                             }
                             $student->studentCcas = $studentCcas = $newCcas;
                         }
@@ -130,7 +124,7 @@ class UserController extends Controller {
                                 $discardedPastTrip->delete();
                             }
                             foreach ($newPastTrips as $newPastTrip) {
-                                $newPastTrip->save(false);
+                                $newPastTrip->save();
                             }
                             $student->pastTrips = $pastTrips = $newPastTrips;
                         }
@@ -151,13 +145,13 @@ class UserController extends Controller {
                         if (isset($_POST['NextOfKin'])) {
                             $nextOkKin->attributes = $_POST['NextOfKin'];
                             $nextOkKin->isNewRecord = false;
-                            $nextOkKin->save(false);
+                            $nextOkKin->save();
                         }  else {
                             $nextOkKin->refresh();
                         }
-                        if ($nextOkKin->created != $nextOkKin->modified) { //The record has been modified
-                            $nextOkKin->validate();
-                        }
+//                        if ($nextOkKin->created != $nextOkKin->modified) { //The record has been modified
+//                            $nextOkKin->validate();
+//                        }
                         // Process Family Members
                         if (isset($_POST['FamilyMember'])) {
                             $newMembers = UserController::assignRelatedModels($_POST['FamilyMember'], 'FamilyMember');
@@ -166,7 +160,7 @@ class UserController extends Controller {
                                 $discardedMembers->delete();
                             }
                             foreach ($newMembers as $newMember) {
-                                $newMember->save(false);
+                                $newMember->save();
                             }
                             $student->familyMembers = $familyMembers = $newMembers;
                         }
@@ -271,4 +265,15 @@ class UserController extends Controller {
       );
       }
      */
+    
+    public static function loadStudent() {
+        /* @var $student Student */
+        if (isset($_SESSION['student'])) {
+            $student = $_SESSION['student'];
+        } else {
+            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk(Yii::app()->user->studentId);
+            $_SESSION['student'] = $student;
+        }
+        return $student;
+    }
 }

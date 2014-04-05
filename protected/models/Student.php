@@ -363,4 +363,15 @@ class Student extends CActiveRecord
             
             return $errors;
         }
+        
+        /**
+         * check if student has applied for specified project
+         * @param integer $projectId
+         */
+        public function appliedFor($projectId) {
+            if (StudentApplication::model()->findByAttributes(array('projectId'=>$projectId,'studentId'=>$this->id))) {
+                return true;
+            }
+            return false;
+        }
 }

@@ -29,6 +29,7 @@ $project = $application->project;
             'size'=>'mini',
             'htmlOptions'=>array(
                 'class'=>'btn-del-app',
+                'appid'=>$application->id,
             ),
         )); ?>
 </div>

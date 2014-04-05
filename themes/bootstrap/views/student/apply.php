@@ -4,7 +4,7 @@
 /* @var $application Application */
 
 $this->breadcrumbs=array(
-	'Project'=>array('/student/publicProjects'),
+	'Projects'=>array('/student/publicProjects'),
         'Apply'
 );
 ?>

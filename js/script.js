@@ -160,8 +160,8 @@ $(document).ready(function(){
                         resetStaffListIndex();
                     } else 
                         if (data.message) alert(data.message);
+                    reloadStaffSelect();
             });
-            reloadStaffSelect();
         }
     });
     initStaffEditBtns();
@@ -216,8 +216,8 @@ function initStaffEditBtns(staffId) {
                         resetStaffListIndex();
                     } else 
                         alert(data.message);
+                    reloadStaffSelect();
             });
-            reloadStaffSelect();
         }
     });
 }

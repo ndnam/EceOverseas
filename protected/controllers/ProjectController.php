@@ -23,11 +23,11 @@ class ProjectController extends Controller
 	{
             return array(
                 array('allow',  
-                    'actions'=>array('test'),
+                    'actions'=>array('test','view'),
                     'users'=>array('@'),
                 ),
                 array('allow',
-                    'actions'=>array('index','view','create','update','delete','changeApplicationStatus','changeStaffRole','addStaff','removeStaff','availableStaffs'),
+                    'actions'=>array('index','create','update','delete','changeApplicationStatus','changeStaffRole','addStaff','removeStaff','availableStaffs'),
                     'users'=>array('@'),
                     'expression'=>'$user->accountType == 1',
                 ),
@@ -69,51 +69,58 @@ class ProjectController extends Controller
          */
         public function actionView($id) {
             $model = $this->loadModel($id);
-            $role = $model->getStaffRole(Yii::app()->user->staffId);
             
-            // Update Project via Ajax
-            if (isset($_POST['Project'])) {
-                $model->attributes = $_POST['Project'];
-                $model->status = $_POST['Project']['status'];
-                //Ajax validation
-                if(isset($_POST['ajax']) && $_POST['ajax']==='project-edit-form'){
-                    echo CActiveForm::validate($model);
+            if (Yii::app()->user->accountType == User::TYPE_STAFF) {
+                $role = $model->getStaffRole(Yii::app()->user->staffId);
+
+                // Update Project via Ajax
+                if (isset($_POST['Project'])) {
+                    $model->attributes = $_POST['Project'];
+                    $model->status = $_POST['Project']['status'];
+                    //Ajax validation
+                    if(isset($_POST['ajax']) && $_POST['ajax']==='project-edit-form'){
+                        echo CActiveForm::validate($model);
+                        Yii::app()->end();
+                    }
+                    //Save model
+                    if ($model->save()) {
+                        $status = 1;
+                    } else {
+                        $status = 0;
+                    }
+                    echo CJavaScript::jsonEncode(array(
+                        'status'=>$status,
+                        'model'=>$model->attributes,
+                    ));
                     Yii::app()->end();
                 }
-                //Save model
-                if ($model->save()) {
-                    $status = 1;
-                } else {
-                    $status = 0;
-                }
-                echo CJavaScript::jsonEncode(array(
-                    'status'=>$status,
-                    'model'=>$model->attributes,
+
+                $appDataProvider = new CActiveDataProvider('StudentApplication',array(
+                    'criteria'=>array(
+                        'condition'=>'projectId = ' . $id,
+                        'order'=>'status DESC',
+                        'with'=>array('student'),
+                    ),
                 ));
-                Yii::app()->end();
+
+                $staffDataProvider = new CActiveDataProvider('ProjectStaff',array(
+                    'criteria'=>array(
+                        'condition'=>'projectId = ' . $id,
+                        'with'=>array('staff'),
+                    ),
+                ));
+
+                $this->render('view_edit',array(
+                    'model'=>$model,
+                    'staffRole'=>$role,
+                    'applications'=>$appDataProvider->getData(),
+                    'staffs'=>$staffDataProvider->getData(),
+                ));
+            } else {
+                $this->render('view',array(
+                    'project'=>$model,
+                ));
             }
-            
-            $appDataProvider = new CActiveDataProvider('StudentApplication',array(
-                'criteria'=>array(
-                    'condition'=>'projectId = ' . $id,
-                    'order'=>'status DESC',
-                    'with'=>array('student'),
-                ),
-            ));
-            
-            $staffDataProvider = new CActiveDataProvider('ProjectStaff',array(
-                'criteria'=>array(
-                    'condition'=>'projectId = ' . $id,
-                    'with'=>array('staff'),
-                ),
-            ));
-            
-            $this->render('view',array(
-                'model'=>$model,
-                'staffRole'=>$role,
-                'applications'=>$appDataProvider->getData(),
-                'staffs'=>$staffDataProvider->getData(),
-            ));
         }
         
 	public function actionChangeStaffRole()

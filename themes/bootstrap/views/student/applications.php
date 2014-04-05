@@ -4,7 +4,7 @@
 /* @var $applications Application[]*/
 
 $this->breadcrumbs=array(
-	'Projects',
+	'Applications',
 );
 ?>
 <?php
