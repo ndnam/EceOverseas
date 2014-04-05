@@ -3,7 +3,7 @@
 /* @var $data Student */
 ?>
 
-<div class="view">
+<div class="box">
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>

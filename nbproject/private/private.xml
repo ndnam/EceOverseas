@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/ProjectController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/project/create.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/student/applications.php</file>
             <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/project/index.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/user/profile_family.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/student/apply.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/user/profile_student.php</file>
             <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/layouts/student.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/project/_project_form_edit.php</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/models/Project.php</file>
             <file>file:/C:/xampp/htdocs/EceOverseas/js/script.js</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/layouts/profile.php</file>
             <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/project/view.php</file>
         </group>
     </open-files>

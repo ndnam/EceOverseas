@@ -4,7 +4,7 @@
  * - $this: the BootCrudCode object
  */
 ?>
-<div class="view">
+<div class="box">
 
 	<?php
 	echo "\t<b><?php echo CHtml::encode(\$data->getAttributeLabel('{$this->tableSchema->primaryKey}')); ?>:</b>\n";

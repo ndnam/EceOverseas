@@ -2,7 +2,7 @@
 /* @var $application Application */
 $project = $application->project;
 ?>
-<div class="view">
+<div class="box">
 
         <?php echo CHtml::link(CHtml::encode($project->title), array('/project/'.$project->id)); ?>
 	<br />
