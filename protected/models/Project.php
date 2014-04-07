@@ -47,12 +47,14 @@ class Project extends CActiveRecord
 		return array(
 			array('title, description','filter','filter'=>'trim'),
 			array('title, description, startDate, endDate, teamSize, deadline', 'required'),
+                        array('startDate, endDate, deadline','date','format'=>'d/M/yyyy'),
                         array('teamSize', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>100),
 			array('description', 'length', 'max'=>500),
 			array('locationId, teamSize', 'length', 'max'=>10),
-                        array('deadline','checkBeforeDate','largerDate'=>'startDate'),
                         array('startDate','checkBeforeDate','largerDate'=>'endDate'),
+                        array('endDate','checkAfterDate','smallerDate'=>'startDate'),
+                        array('deadline','checkBeforeDate','largerDate'=>'startDate'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, title, status, description, locationId, startDate, endDate, teamSize, deadline, created, modified', 'safe', 'on'=>'search'),
@@ -147,6 +149,10 @@ class Project extends CActiveRecord
 	}
         
         public function beforeSave() {
+            $this->startDate = ModelHelper::convertDateForSave($this->startDate);
+            $this->endDate = ModelHelper::convertDateForSave($this->endDate);
+            $this->deadline = ModelHelper::convertDateForSave($this->deadline);
+            
             $this->modified = NULL;
             if ($this->isNewRecord) 
                 $this->created = NULL;
@@ -157,6 +163,12 @@ class Project extends CActiveRecord
             return $isOK;
         }
         
+        public function afterFind() {
+            $this->startDate = ModelHelper::convertDateForDisplay($this->startDate);
+            $this->endDate = ModelHelper::convertDateForDisplay($this->endDate);
+            $this->deadline = ModelHelper::convertDateForDisplay($this->deadline);
+        }
+        
         /**
          * 
          * @param string $attribute
@@ -164,8 +176,16 @@ class Project extends CActiveRecord
          */
         public function checkBeforeDate($attribute,$params) {
             if (!empty($this->$params['largerDate'])) {
-                if (strtotime($this->$attribute) >= strtotime($this->$params['largerDate'])) {
-                    $this->addError($attribute, $attribute . ' must be before ' . $params['largerDate']);
+                if (strtotime(ModelHelper::convertDateForSave($this->$attribute)) >= strtotime(ModelHelper::convertDateForSave($this->$params['largerDate']))) {
+                    $this->addError($attribute, $this->getAttributeLabel($attribute) . ' must be before ' . $this->getAttributeLabel($params['largerDate']));
+                }
+            }
+        }
+        
+        public function checkAfterDate($attribute,$params) {
+            if (!empty($this->$params['smallerDate'])) {
+                if (strtotime(ModelHelper::convertDateForSave($this->$attribute)) < strtotime(ModelHelper::convertDateForSave($this->$params['smallerDate']))) {
+                    $this->addError($attribute, $this->getAttributeLabel($attribute) . ' must be after ' . $this->getAttributeLabel($params['smallerDate']));
                 }
             }
         }

@@ -33,16 +33,13 @@
             <?php echo $form->labelEx($model,'startDate',array('class'=>'control-label')); ?>
             <div class="controls">
                 <p class="help-block attr-value"><?= CHtml::encode($model->startDate) ?></p>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+                <?php $this->widget('bootstrap.widgets.TbDatePicker',array(
                     'name'=>'Project[startDate]',
                     'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
+                        'format' => 'dd/mm/yyyy',
                     ),
                     'value' => $model->startDate,
-                    'htmlOptions'=>array('class'=>'hide'),
+                    'htmlOptions'=>array('class'=>'hide','style'=>'width:100px'),
                 )); ?>
 		<?php echo $form->error($model,'startDate'); ?>
             </div>
@@ -52,16 +49,13 @@
             <?php echo $form->labelEx($model,'endDate',array('class'=>'control-label')); ?>
             <div class="controls">
                 <p class="help-block attr-value"><?= CHtml::encode($model->endDate) ?></p>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+                <?php $this->widget('bootstrap.widgets.TbDatePicker',array(
                     'name'=>'Project[endDate]',
                     'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
+                        'format' => 'dd/mm/yyyy',
                     ),
                     'value' => $model->endDate,
-                    'htmlOptions'=>array('class'=>'hide'),
+                    'htmlOptions'=>array('class'=>'hide','style'=>'width:100px'),
                 )); ?>
 		<?php echo $form->error($model,'endDate'); ?>
             </div>
@@ -80,16 +74,13 @@
             <?php echo $form->labelEx($model,'deadline',array('class'=>'control-label')); ?>
             <div class="controls">
                 <p class="help-block attr-value"><?= CHtml::encode($model->deadline) ?></p>
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+                <?php $this->widget('bootstrap.widgets.TbDatePicker',array(
                     'name'=>'Project[deadline]',
                     'options'=>array(
-                        'showAnim'=>'fold',
-                        'yearRange'=>'2010:2020',
-                        'changeYear'=>true,
-                        'dateFormat' => 'yy-mm-dd',
+                        'format' => 'dd/mm/yyyy',
                     ),
                     'value' => $model->deadline,
-                    'htmlOptions'=>array('class'=>'hide'),
+                    'htmlOptions'=>array('class'=>'hide','style'=>'width:100px'),
                 )); ?>
 		<?php echo $form->error($model,'deadline'); ?>
             </div>
@@ -112,7 +103,7 @@
         </div>
     
         <?php if ($staffRole == Project::ROLE_LEADER) { ?>
-            <div class="control-group project-btns">
+            <div class="control-group project-btns" style="margin-top: 20px">
                 <div class="cell align-right pull-left">
                     <a href="javascript:;" class="btn btn-info" id="btn-edit-project">Edit</a>
                     <a href="javascript:;" class="btn btn-info hide" id="btn-update-project">Update</a>

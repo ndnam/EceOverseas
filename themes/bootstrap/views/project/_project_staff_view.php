@@ -23,7 +23,7 @@ $staff = Staff::model()->with('user')->findByPk($data->staffId);
                 'roleSelect' . $data->id, 
                 $data->role, 
                 Dictionary::items(Dictionary::TYPE_STAFF_ROLE),
-                ['class'=>'roleSelect hide', 'projectStaffId'=>$data->id])
+                ['class'=>'roleSelect hide', 'projectStaffId'=>$data->id,'style'=>'width:160px'])
         ?>
     </td>
     

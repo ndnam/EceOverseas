@@ -20,9 +20,9 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         
         <?= $form->textFieldRow($student, 'firstName'); ?>
         <?= $form->textFieldRow($student, 'familyName',array('maxlength'=>50)); ?>
-        <?= $form->dropDownListRow($student, 'gender',array(1=>'Male',2=>'Female')); ?>
-        <?= $form->datepickerRow($student,'birthday',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
-        <?= $form->textFieldRow($student, 'studentNumber',array('maxlength'=>10)); ?>
+        <?= $form->dropDownListRow($student, 'gender',array(1=>'Male',2=>'Female'), array('style'=>'width:100px')); ?>
+        <?= $form->datepickerRow($student,'birthday',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
+        <?= $form->textFieldRow($student, 'studentNumber',array('maxlength'=>10, 'style'=>'width:100px')); ?>
         <?= $form->textFieldRow($student, 'school',array('maxlength'=>50)); ?>
         <?= $form->textFieldRow($student, 'course',array('maxlength'=>50)); ?>
         <?= $form->textFieldRow($student, 'level',array('maxlength'=>10)); ?>
@@ -30,17 +30,17 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         <?= $form->textFieldRow($student, 'religion',array('maxlength'=>50)); ?>
         <?= $form->textFieldRow($student, 'nationality',array('maxlength'=>50)); ?>
         <?= $form->checkBoxRow($student, 'isPR'); ?>
-        <?= $form->textFieldRow($student, 'nricNumber',array('maxlength'=>10)); ?>
-        <?= $form->textFieldRow($student, 'passportNumber',array('maxlength'=>50)); ?>
+        <?= $form->textFieldRow($student, 'nricNumber',array('maxlength'=>10, 'style'=>'width:100px')); ?>
+        <?= $form->textFieldRow($student, 'passportNumber',array('maxlength'=>50, 'style'=>'width:100px')); ?>
         <?= $form->dropDownListRow($student, 'issuingCountry',DictCountry::getCountries()); ?>
-        <?= $form->datepickerRow($student,'issuingDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
-        <?= $form->datepickerRow($student,'expiryDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
-        <?= $form->dropDownListRow($student, 'tshirtSize',Dictionary::items(Dictionary::TYPE_TSHIRT_SIZE)); ?>
-        <?= $form->dropDownListRow($student, 'bloodGroup',Dictionary::items(Dictionary::TYPE_BLOOD_GROUP)); ?>
-        <?= $form->dropDownListRow($student, 'swimmingAbility',Dictionary::items(Dictionary::TYPE_SWIMMING_ABILITY)); ?>
+        <?= $form->datepickerRow($student,'issuingDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy', 'style'=>'width:100px'))); ?>
+        <?= $form->datepickerRow($student,'expiryDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy', 'style'=>'width:100px'))); ?>
+        <?= $form->dropDownListRow($student, 'tshirtSize',Dictionary::items(Dictionary::TYPE_TSHIRT_SIZE), array('style'=>'width:100px')); ?>
+        <?= $form->dropDownListRow($student, 'bloodGroup',Dictionary::items(Dictionary::TYPE_BLOOD_GROUP), array('style'=>'width:100px')); ?>
+        <?= $form->dropDownListRow($student, 'swimmingAbility',Dictionary::items(Dictionary::TYPE_SWIMMING_ABILITY), array('style'=>'width:100px')); ?>
         <?= $form->textAreaRow($student, 'homeAddress',array('maxlength'=>200)); ?>
         <?= $form->textFieldRow($student, 'postalCode',array('maxlength'=>10)); ?>
-        <?= $form->dropDownListRow($student, 'housingType',Dictionary::items(Dictionary::TYPE_HOUSING_TYPE)); ?>
+        <?= $form->dropDownListRow($student, 'housingType',Dictionary::items(Dictionary::TYPE_HOUSING_TYPE), array('style'=>'width:100px')); ?>
         <?= $form->textFieldRow($student, 'personalEmail',array('maxlength'=>50)); ?>
         <?= $form->textFieldRow($student, 'mobilePhone',array('maxlength'=>20)); ?>
         <?= $form->textFieldRow($student, 'homePhone',array('maxlength'=>20)); ?>

@@ -22,10 +22,10 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 ?>
         <?= $form->textFieldRow($project, 'title'); ?>
         <?= $form->textAreaRow($project, 'description'); ?>
-        <?= $form->datepickerRow($project,'startDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
-        <?= $form->datepickerRow($project,'endDate',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
+        <?= $form->datepickerRow($project,'startDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
+        <?= $form->datepickerRow($project,'endDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
         <?= $form->textAreaRow($project, 'teamSize'); ?>
-        <?= $form->datepickerRow($project,'deadline',array('options' => array('dateFormat'=>'yy-mm-dd'))); ?>
+        <?= $form->datepickerRow($project,'deadline',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
         <?= $form->dropDownListRow($project, 'locationId',Location::loadLocations()); ?>
 
         <div class="control-group">

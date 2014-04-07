@@ -384,6 +384,7 @@ class ProjectController extends Controller
         public function actionTest() {
             echo CPasswordHelper::hashPassword('1234');
             echo '<br>';
+            echo ModelHelper::convertDateForSave('2011-4-30');
         }
         
         /**

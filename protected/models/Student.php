@@ -69,6 +69,7 @@ class Student extends CActiveRecord
 		return array(
                         array('firstName, familyName, school, course, level, race, religion, nationality, passportNumber, homeAddress, postalCode, personalEmail, mobilePhone, homePhone','filter','filter'=>'trim'),
 			array('firstName, familyName, studentNumber, school, course, level, birthday, race, religion, nationality, passportNumber, issuingCountry, issuingDate, expiryDate, homeAddress, postalCode, personalEmail, mobilePhone', 'required'),
+                        array('birthday, issuingDate, expiryDate','date','format'=>'d/M/yyyy'),
 			array('gender, isPR, tshirtSize, bloodGroup, swimmingAbility, housingType', 'numerical', 'integerOnly'=>true),
 			array('firstName, familyName, school, course, race, religion, nationality, passportNumber, personalEmail', 'length', 'max'=>50),
                         array('personalEmail','email'),
@@ -98,7 +99,7 @@ class Student extends CActiveRecord
          * @param array $params
          */
         public function validateExpiryDate($attribute,$params) {
-            if (strtotime($this->$attribute) <= strtotime($this->issuingDate))
+            if (strtotime(ModelHelper::convertDateForSave($this->$attribute)) <= strtotime(ModelHelper::convertDateForSave($this->issuingDate)))
                 $this->addError ($attribute, 'Invalid Expiry Date');
         }
         
@@ -284,10 +285,19 @@ class Student extends CActiveRecord
 	}
         
         public function beforeSave() {
+            $this->birthday = ModelHelper::convertDateForSave($this->birthday);
+            $this->issuingDate = ModelHelper::convertDateForSave($this->issuingDate);
+            $this->expiryDate = ModelHelper::convertDateForSave($this->expiryDate);
             $this->modified = NULL;
             if ($this->isNewRecord) 
                 $this->created = NULL;
             return true;
+        }
+        
+        public function afterFind() {
+            $this->birthday = ModelHelper::convertDateForDisplay($this->birthday);
+            $this->issuingDate = ModelHelper::convertDateForDisplay($this->issuingDate);
+            $this->expiryDate = ModelHelper::convertDateForDisplay($this->expiryDate);
         }
         
         public function afterSave() {

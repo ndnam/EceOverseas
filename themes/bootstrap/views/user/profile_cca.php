@@ -25,9 +25,9 @@ $form=$this->beginWidget('CActiveForm', array(
         <thead>
             <tr>
                 <th style="width: 55px;">Is in NP</th>
-                <th>Period</th>
-                <th>Organization</th>
-                <th>Position</th>
+                <th>Period <span class="required">*</span></th>
+                <th>Organization <span class="required">*</span></th>
+                <th>Position <span class="required">*</span></th>
                 <th>Description</th>
             </tr>
         </thead>
@@ -67,10 +67,10 @@ $form=$this->beginWidget('CActiveForm', array(
     <table class="table table-condensed" id="table-pasttrip">
         <thead>
             <tr>
-                <th>Program Name</th>
+                <th>Program Name <span class="required">*</span></th>
                 <th>Country</th>
-                <th>Duration </th>
-                <th>Capacity</th>
+                <th>Duration <span class="required">*</span></th>
+                <th>Capacity <span class="required">*</span></th>
                 <th>Subsidized</th>
                 <th style="width: 55px;">Amount</th>
             </tr>
