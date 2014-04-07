@@ -296,6 +296,9 @@ class StudentController extends Controller {
      */
     public function actionApply($id) {
         $project = Project::model()->findByPk($id);
+        if ($project->deadlinePassed) {
+            $this->redirect(array('student/publicProjects'));
+        }
         $application = StudentApplication::model()->findByAttributes(array('projectId'=>$id,'studentId'=>Yii::app()->user->studentId));
         if (is_null($application)) {
             $application = new StudentApplication;
@@ -334,7 +337,7 @@ class StudentController extends Controller {
      * Lists all public projects that student hasn't applied
      */
     public function actionPublicProjects() {
-        $publicProjects = Project::model()->findAll('status=' . Project::STATUS_PUBLIC);
+        $publicProjects = Project::model()->findAll('status='.Project::STATUS_PUBLIC,array('order'=>'deadline'));
         $appliedProjects = Project::getProjectByStudentId(Yii::app()->user->studentId);
         $unappliedProjects = array_diff($publicProjects, $appliedProjects);
         

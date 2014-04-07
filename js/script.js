@@ -175,9 +175,11 @@ $(document).ready(function(){
     
     // Delete student application
     $('.btn-del-app').click(function(){
-        if (confirm('Do you want to delete your application for this project?')) {
-            window.location.href = '/EceOverseas/student/deleteApp/' + $(this).attr('appId');
-        }
+        $this = $(this);
+        js:bootbox.confirm('Do you want to delete your application for this project?',function(confirmed) {
+            if (confirmed) 
+                window.location.href = '/EceOverseas/student/deleteApp/' + $this.attr('appId');
+        });
     });
 });
 
@@ -210,22 +212,24 @@ function initStaffEditBtns(staffId) {
     });
     
     $(staffId ? '#btnRemoveStaff' + staffId : '.btnRemoveStaff').click(function(){
-        if (confirm('Do you want to remove this person?')) {
-            var btnRemoveStaff = $(this);
-            $.post('/EceOverseas/project/removeStaff',
-                {prjStaffId:$(this).attr('prjStaffId')},
-                function(data){
-                    if (data.status == 1) {
-                        if (data.refresh) {
-                            location.reload();
-                        }
-                        btnRemoveStaff.parents('tr').detach();
-                        resetStaffListIndex();
-                    } else 
-                        alert(data.message);
-                    reloadStaffSelect();
-            });
-        }
+        var btnRemoveStaff = $(this);
+        js:bootbox.confirm('Do you want to remove this person?',function(confirmed){
+            if (confirmed) {
+                $.post('/EceOverseas/project/removeStaff',
+                    {prjStaffId:btnRemoveStaff.attr('prjStaffId')},
+                    function(data){
+                        if (data.status == 1) {
+                            if (data.refresh) {
+                                location.reload();
+                            }
+                            btnRemoveStaff.parents('tr').detach();
+                            resetStaffListIndex();
+                        } else 
+                            alert(data.message);
+                        reloadStaffSelect();
+                });
+            }
+        });
     });
 }
 
@@ -240,15 +244,17 @@ function reloadStaffSelect() {
 }
 
 function deleteProject(projectId) {
-    if (confirm('Are you sure you want to delete this project?')) {
-        $.post('/EceOverseas/project/delete',{projectId:projectId},function(data){
-            if (data.status == 1) {
-                window.location.href = '/EceOverseas/project';
-            } else {
-                alert(data.message);
-            }
-        });
-    }
+    js:bootbox.confirm('Are you sure you want to delete this project?',function(confirmed) {
+        if (confirmed) {
+            $.post('/EceOverseas/project/delete',{projectId:projectId},function(data){
+                if (data.status == 1) {
+                    window.location.href = '/EceOverseas/project';
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    });
 }
 
 function resetStaffListIndex() {

@@ -49,6 +49,10 @@ a.error {
     color: red;
 }
 
+span.error {
+    color: #FF1F6D;
+}
+
 .first {
     margin-left: 0px;
 }

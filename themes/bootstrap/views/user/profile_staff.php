@@ -3,7 +3,6 @@
 /* @var $staff Staff */
 
 $this->breadcrumbs=array(
-    'User',
     'Profile',
 );
 ?>

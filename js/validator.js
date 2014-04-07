@@ -1,3 +1,8 @@
+$(document).ready(function(){
+    $('#Project_startDate').change(function(){
+        $('#Project_endDate').change();
+    });
+});
 
 var modified = false;
 function markAsModified(){

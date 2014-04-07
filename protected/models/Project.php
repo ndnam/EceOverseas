@@ -52,9 +52,9 @@ class Project extends CActiveRecord
 			array('title', 'length', 'max'=>100),
 			array('description', 'length', 'max'=>500),
 			array('locationId, teamSize', 'length', 'max'=>10),
-                        array('startDate','checkBeforeDate','largerDate'=>'endDate'),
-                        array('endDate','checkAfterDate','smallerDate'=>'startDate'),
-                        array('deadline','checkBeforeDate','largerDate'=>'startDate'),
+//                        array('startDate','checkBeforeDate','largerDate'=>'endDate'),
+//                        array('endDate','checkAfterDate','smallerDate'=>'startDate'),
+//                        array('deadline','checkBeforeDate','largerDate'=>'startDate'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, title, status, description, locationId, startDate, endDate, teamSize, deadline, created, modified', 'safe', 'on'=>'search'),
@@ -264,5 +264,9 @@ class Project extends CActiveRecord
                 }
             }
             return $staffs;
+        }
+        
+        public function getDeadlinePassed() {
+            return time() > strtotime(ModelHelper::convertDateForSave($this->deadline));
         }
 }

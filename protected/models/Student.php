@@ -76,7 +76,7 @@ class Student extends CActiveRecord
                         //Custom validators:
                         array('mobilePhone, homePhone','match','pattern'=>'/^\d+$/'),
                         array('nricNumber','match','pattern'=>'/^[SFTGsftg][0-9]{7}.$/'),
-                        array('expiryDate','validateExpiryDate'),
+//                        array('expiryDate','validateExpiryDate'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, firstName, familyName, gender, studentNumber, school, course, level, birthday, race, religion, nationality, isPR, nricNumber, passportNumber, issuingCountry, issuingDate, expiryDate, tshirtSize, bloodGroup, swimmingAbility, homeAddress, postalCode, housingType, personalEmail, mobilePhone, homePhone, created, modified', 'safe', 'on'=>'search'),

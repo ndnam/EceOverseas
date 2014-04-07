@@ -6,7 +6,7 @@
 /* @var $staffRole integer */
 
 $this->breadcrumbs=array(
-	'Project'=>array('/project'),
+	'Projects'=>array('/project'),
 	$model->title,
 );
 if ($model->status == Project::STATUS_NEW) {

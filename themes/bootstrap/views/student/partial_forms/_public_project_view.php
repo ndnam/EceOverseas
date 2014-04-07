@@ -12,11 +12,11 @@
 	<br />
 
 	<b><?php echo CHtml::encode($project->getAttributeLabel('deadline')); ?>:</b>
-	<?php echo CHtml::encode($project->deadline); ?>
+        <span class="<?= $project->deadlinePassed ? 'error':''?>"><?php echo CHtml::encode($project->deadline); ?></span>
 	<br />
         
         <?php 
-        if (!$profileIncomplete)
+        if (!$profileIncomplete && !$project->deadlinePassed)
             $this->widget('bootstrap.widgets.TbButton', array(
                 'label'=>'Apply',
                 'type'=>'primary',
