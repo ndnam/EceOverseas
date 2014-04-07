@@ -100,6 +100,13 @@ $(document).ready(function(){
                 $('#btn-update-project, #btn-cancel').hide();
                 $('#btn-edit-project').show();
                 $('h2#project-title').text($('#Project_title').val());
+                
+                // Toggle the Delete Project button when project status is changed
+                if ($('#Project_status').val() == 1) {
+                    $('#btn-delete-project').show();
+                } else {
+                    $('#btn-delete-project').hide();
+                }
             } else {
                 alert('Cannot save changes');
             }
@@ -260,22 +267,5 @@ function initPastTripForm(parent) { //parent is selector
         } else {
             inputAmount.prop('disabled',true);
         }
-    });
-}
-
-function initSaveFormConfirmation(){
-    $(document).ready(function(){
-        var notModified = true;
-        $('input, textarea, select').change(function(){
-            if (notModified) {
-                $(window).bind('beforeunload', function(){ 
-                    return 'You are navigating away. Make sure you have saved you data first.';
-                });
-                notModified = false;
-            }
-        });
-        $('input[type="submit"]').click(function(e){
-            $(window).unbind('beforeunload')
-        });
     });
 }

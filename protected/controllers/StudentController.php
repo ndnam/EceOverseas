@@ -26,7 +26,7 @@ class StudentController extends Controller {
     public function accessRules() {
         return array(
             array('allow',
-                'actions' => array('closeSession'),
+                'actions' => array('closeSession','profileErrors'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -60,6 +60,15 @@ class StudentController extends Controller {
 
     public function actionCloseSession() {
         Yii::app()->session->destroy();
+    }
+    
+    /**
+     * Return list of profile sections that contain errors
+     */
+    public function actionProfileErrors() {
+        $student = UserController::loadStudent();
+        header('Content-type: application/json');
+        echo CJSON::encode($student->profileErrors);
     }
 
     /**

@@ -9,9 +9,14 @@ $this->breadcrumbs=array(
 	'Project'=>array('/project'),
 	$model->title,
 );
-$this->menu = array(
-    array('label'=>'Delete Project','icon'=>'trash','url'=>'javascript:deleteProject(' . $model->id . ')'),
-);
+if ($model->status == Project::STATUS_NEW) {
+    $this->menu = array(
+        array('label'=>'Delete Project',
+            'icon'=>'trash',
+            'url'=>'javascript:deleteProject(' . $model->id . ')',
+            'itemOptions'=>array('id'=>'btn-delete-project')),
+    );
+}
 ?>
 
 <h2 id="project-title"><?= $model->title?></h2>

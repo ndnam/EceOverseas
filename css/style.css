@@ -32,8 +32,12 @@ input.error1, input.error2, input.error3  {
 }
 
 #sidebar li.error a {
-    background: #FF0055;
+    background: #FF4D7F;
     color: #fff;
+}
+
+#sidebar li.error.active a {
+    background: #A4629B;
 }
 
 #sidebar li.error a:hover {

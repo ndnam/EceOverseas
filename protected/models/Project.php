@@ -169,6 +169,10 @@ class Project extends CActiveRecord
             $this->deadline = ModelHelper::convertDateForDisplay($this->deadline);
         }
         
+        public function afterSave() {
+            $this->afterFind();
+        }
+        
         /**
          * 
          * @param string $attribute

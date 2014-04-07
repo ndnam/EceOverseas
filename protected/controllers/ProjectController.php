@@ -107,6 +107,7 @@ class ProjectController extends Controller
                     'criteria'=>array(
                         'condition'=>'projectId = ' . $id,
                         'with'=>array('staff'),
+                        'order'=>'fullname',
                     ),
                 ));
 
@@ -397,14 +398,18 @@ class ProjectController extends Controller
             
             $projectId = $_POST['projectId'];
             $project = $this->loadModel($projectId);
-            // Authorize the current user
-            if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
-                if ($project->delete()) {
-                    $this->returnSuccess();
+            if ($project->status == Project::STATUS_NEW) {
+                // Authorize the current user
+                if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
+                    if ($project->delete()) {
+                        $this->returnSuccess();
+                    } else  
+                        $this->returnError();
                 } else  
-                    $this->returnError();
-            } else  
-                $this->returnError('You don\'t have permission to perform this task');
+                    $this->returnError('You don\'t have permission to perform this task');
+            } else {
+                $this->returnError('This project cannot be deleted');
+            }
         }
         
         public function actionAvailableStaffs($projectId){

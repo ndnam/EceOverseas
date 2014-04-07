@@ -1,9 +1,11 @@
 <?php /* @var $this Controller */ 
 
-$student = $this->eagerLoadStudent();
+$student = UserController::loadStudent();
+$errors = $student->profileErrors;
 $username = Yii::app()->user->username;
 $page = isset($_GET['page']) ? $_GET['page'] : 'general';
 
+Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/validator.js');
 ?>
 
 <?php $this->beginContent('//layouts/main'); ?>
@@ -14,10 +16,26 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'general';
                     'type'=>'list',
                     'items'=>array(
                         array('label'=>'PROFILE'),
-                        array('label'=>'Student Info','icon'=>'list','url'=>Yii::app()->baseUrl.'/user/'.$username,'active'=>$page=='general'),
-                        array('label'=>'Medical History','icon'=>'list-alt','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=medical','active'=>$page=='medical'),
-                        array('label'=>'Co-Curriculum activities','icon'=>'list-alt','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=cca','active'=>$page=='cca'),
-                        array('label'=>'Family Details','icon'=>'list-alt','url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=family','active'=>$page=='family'),
+                        array('label'=>'Student Info',
+                            'icon'=>'list',
+                            'url'=>Yii::app()->baseUrl.'/user/'.$username,
+                            'active'=>$page=='general',
+                            'itemOptions'=>array('class'=>in_array('student',$errors)?'error':'')),
+                        array('label'=>'Medical History',
+                            'icon'=>'list-alt',
+                            'url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=medical',
+                            'active'=>$page=='medical',
+                            'itemOptions'=>array('class'=>in_array('medical',$errors)?'error':'')),
+                        array('label'=>'Co-Curriculum activities',
+                            'icon'=>'list-alt',
+                            'url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=cca',
+                            'active'=>$page=='cca',
+                            'itemOptions'=>array('class'=>in_array('cca',$errors)?'error':'')),
+                        array('label'=>'Family Details',
+                            'icon'=>'list-alt',
+                            'url'=>Yii::app()->baseUrl.'/user/'.$username.'?page=family',
+                            'active'=>$page=='family',
+                            'itemOptions'=>array('class'=>in_array('family',$errors)?'error':'')),
                     ),
                 ));
             ?>
@@ -30,4 +48,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'general';
 </div>
 <?php $this->endContent(); ?>
 
-
+<script>
+    initSaveFormConfirmation();
+</script>

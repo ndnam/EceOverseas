@@ -7,18 +7,8 @@ class UserController extends Controller {
     public function accessRules() {
         return array(
             array('allow',
-                'actions' => array('signup'),
-                'users' => array('*'),
-                'expression' => '$user->isGuest',
-            ),
-            array('allow',
                 'actions' => array('profile', 'view'),
                 'users' => array('@'),
-            ),
-            array('allow',
-                    'actions'=>array('profileErrors'),
-                    'users'=>array('@'),
-                    'expression'=>'$user->accountType == 2',
             ),
             array('deny', // deny all users
                 'users' => array('*'),
@@ -28,20 +18,6 @@ class UserController extends Controller {
 
     public function actionSignUp() {
         $this->render('signup');
-    }
-    
-    /**
-     * Return list of profile sections that contain errors
-     */
-    public function actionProfileErrors() {
-        if (isset($_SESSION['Student'])) {
-            $student = $_SESSION['Student'];
-        } else {
-            $student = Student::model()->with('medicalInfo','studentCcas','pastTrips','nextOfKin','familyMembers')
-                       ->findByPk(Yii::app()->user->studentId);
-        }
-        header('Content-type: application/json');
-        echo CJSON::encode($student->profileErrors);
     }
 
     public function actionProfile($username,$page = 'general') {
@@ -105,28 +81,55 @@ class UserController extends Controller {
                         $studentCcas = $student->studentCcas;
                         $pastTrips = $student->pastTrips;
 
-                        if (isset($_POST['StudentCca'])) {
-                            $newCcas = UserController::assignRelatedModels($_POST['StudentCca'], 'StudentCca');
-                            $discardedCcas = array_diff($studentCcas, $newCcas);
-                            foreach ($discardedCcas as $discardedCca) {
-                                $discardedCca->delete();
+                        if (Yii::app()->request->requestType == 'POST') {
+                            if (isset($_POST['StudentCca'])) {
+                                $newCcas = UserController::assignRelatedModels($_POST['StudentCca'], 'StudentCca');
+                                $discardedCcas = array_diff($studentCcas, $newCcas);
+                                foreach ($discardedCcas as $discardedCca) {
+                                    // Delete record from database
+                                    if (!$discardedCca->isNewRecord) $discardedCca->delete();
+                                }
+                                foreach ($newCcas as $newCca) {
+                                    if ($newCca->validate()) {
+                                        if (is_numeric($newCca->id)) { // If ID is integer number
+                                            $newCca->isNewRecord = false;
+                                        } else {
+                                            $newCca->id = null;
+                                        }
+                                        $newCca->save(false);
+                                    }
+                                }
+                                $student->studentCcas = $studentCcas = $newCcas;
+                            } else {
+                                foreach ($student->studentCcas as $discardedCca) {
+                                    if (!$discardedCca->isNewRecord) $discardedCca->delete();
+                                }
+                                $student->studentCcas = $studentCcas = array();
                             }
-                            foreach ($newCcas as $newCca) {
-                                $newCca->save();
-                            }
-                            $student->studentCcas = $studentCcas = $newCcas;
-                        }
 
-                        if (isset($_POST['PastTrip'])) {
-                            $newPastTrips = UserController::assignRelatedModels($_POST['PastTrip'], 'PastTrip');
-                            $discardedPastTrips = array_diff($pastTrips,$newPastTrips);
-                            foreach ($discardedPastTrips as $discardedPastTrip) {
-                                $discardedPastTrip->delete();
+                            if (isset($_POST['PastTrip'])) {
+                                $newPastTrips = UserController::assignRelatedModels($_POST['PastTrip'], 'PastTrip');
+                                $discardedPastTrips = array_diff($pastTrips,$newPastTrips);
+                                foreach ($discardedPastTrips as $discardedPastTrip) {
+                                    if (!$discardedPastTrip->isNewRecord) $discardedPastTrip->delete();
+                                }
+                                foreach ($newPastTrips as $newPastTrip) {
+                                    if ($newPastTrip->validate()) {
+                                        if (is_numeric($newPastTrip->id)) { // If ID is integer number
+                                            $newPastTrip->isNewRecord = false;
+                                        } else {
+                                            $newPastTrip->id = null;
+                                        }
+                                        $newPastTrip->save(false);
+                                    }
+                                }
+                                $student->pastTrips = $pastTrips = $newPastTrips;
+                            } else {
+                                foreach ($student->pastTrips as $discardedPastTrip) {
+                                    if (!$discardedPastTrip->isNewRecord) $discardedPastTrip->delete();
+                                }
+                                $student->pastTrips = $pastTrips = array();
                             }
-                            foreach ($newPastTrips as $newPastTrip) {
-                                $newPastTrip->save();
-                            }
-                            $student->pastTrips = $pastTrips = $newPastTrips;
                         }
 
                         $this->render('profile_cca', array(
@@ -135,38 +138,52 @@ class UserController extends Controller {
                         ));
                         break;
                     case 'family':
-                        $nextOkKin = $student->nextOfKin;
+                        $nextOfKin = $student->nextOfKin;
                         $familyMembers = $student->familyMembers;
-                        // Process Next Of Kin
-                        if (isset($_POST['ajax']) && $_POST['ajax'] === 'family-form') {
-                            echo CActiveForm::validate($nextOkKin);
-                            Yii::app()->end();
-                        }
-                        if (isset($_POST['NextOfKin'])) {
-                            $nextOkKin->attributes = $_POST['NextOfKin'];
-                            $nextOkKin->isNewRecord = false;
-                            $nextOkKin->save();
-                        }  else {
-                            $nextOkKin->refresh();
-                        }
-//                        if ($nextOkKin->created != $nextOkKin->modified) { //The record has been modified
-//                            $nextOkKin->validate();
-//                        }
-                        // Process Family Members
-                        if (isset($_POST['FamilyMember'])) {
-                            $newMembers = UserController::assignRelatedModels($_POST['FamilyMember'], 'FamilyMember');
-                            $discardedMembers = array_diff($familyMembers,$newMembers);
-                            foreach ($discardedMembers as $discardedMembers) {
-                                $discardedMembers->delete();
+                        if (Yii::app()->request->requestType == 'POST') {
+                            // Process Next Of Kin
+                            if (isset($_POST['ajax']) && $_POST['ajax'] === 'family-form') {
+                                echo CActiveForm::validate($nextOfKin);
+                                Yii::app()->end();
                             }
-                            foreach ($newMembers as $newMember) {
-                                $newMember->save();
+                            if (isset($_POST['NextOfKin'])) {
+                                $nextOfKin->attributes = $_POST['NextOfKin'];
+                                $nextOfKin->isNewRecord = false;
+                                $nextOfKin->save();
+                            }  else {
+                                $nextOfKin->refresh();
                             }
-                            $student->familyMembers = $familyMembers = $newMembers;
+    //                        if ($nextOkKin->created != $nextOkKin->modified) { //The record has been modified
+    //                            $nextOkKin->validate();
+    //                        }
+                            // Process Family Members
+                            if (isset($_POST['FamilyMember'])) {
+                                $newMembers = UserController::assignRelatedModels($_POST['FamilyMember'], 'FamilyMember');
+                                $discardedMembers = array_diff($familyMembers,$newMembers);
+                                foreach ($discardedMembers as $discardedMembers) {
+                                    if (!$discardedMembers->isNewRecord) $discardedMembers->delete();
+                                }
+                                foreach ($newMembers as $newMember) {
+                                    if ($newMember->validate()) {
+                                        if (is_numeric($newMember->id)) { // If ID is integer number
+                                            $newMember->isNewRecord = false;
+                                        } else {
+                                            $newMember->id = null;
+                                        }
+                                        $newMember->save(false);
+                                    }
+                                }
+                                $student->familyMembers = $familyMembers = $newMembers;
+                            } else {
+                                foreach ($student->familyMembers as $discardedMembers) {
+                                    if (!$discardedMembers->isNewRecord) $discardedMembers->delete();
+                                }
+                                $student->familyMembers = $familyMembers = array();
+                            }
                         }
 
                         $this->render('profile_family',array(
-                            'nextOfKin'=>$nextOkKin,
+                            'nextOfKin'=>$nextOfKin,
                             'familyMembers'=>$familyMembers,
                         ));
                         break;
@@ -229,10 +246,7 @@ class UserController extends Controller {
         foreach ($items_posted as $id=>$item_post) {
             $model = new $className;
             $model->attributes = $item_post;
-            if (is_numeric($id)) {
-                $model->id = $id;
-                $model->isNewRecord = false;
-            }
+            $model->id = $id;
             $model->studentId = Yii::app()->user->studentId;
             array_push($models, $model);
         }

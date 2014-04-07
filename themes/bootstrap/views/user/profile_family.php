@@ -4,8 +4,6 @@
 /* @var $familyMembers FamilyMember[] */
 /* @var $form CActiveForm */
 
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/js/validator.js');
-
 $this->breadcrumbs = array(
     'Profile',
 );
@@ -40,7 +38,8 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 <fieldset style="margin-bottom: 40px;">
  
     <legend>Family members</legend>
-
+    
+    <p>You need to provide at least one family member or guardian</p>
     <table class="table table-condensed" id="table-family-member">
         <thead>
             <tr>
@@ -53,13 +52,20 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         </thead>
         <tbody>
             
-<?php foreach($familyMembers as $familyMember ) {
-    $this->renderPartial('partial/_item_familymember',array(
-        'familyMember'=>$familyMember,
-        'form'=>$form,
-        'id'=>$familyMember->id,
-    ));
-}
+<?php 
+if (count($familyMembers) > 0) {
+    foreach($familyMembers as $familyMember ) {
+        $this->renderPartial('partial/_item_familymember',array(
+            'familyMember'=>$familyMember,
+            'form'=>$form,
+            'id'=>$familyMember->id,
+        ));
+    }
+} else $this->renderPartial('partial/_item_familymember',array(
+            'familyMember'=>new FamilyMember,
+            'form'=>$form,
+            'id'=>'newRow0',
+        ));
 ?>
         </tbody>
     </table>
@@ -67,6 +73,15 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     <a href="javascript:;" class="btn btn-info" id="btn-add-member" onclick="addMember()">Add Family Member</a>
     <script>
         var lastMember = 0;
+        $('.member-item').each(function(){
+            var id = $(this).attr('id').substr(12,20);
+            if (id.match(/^newRow\d+$/)) {
+                var temp = parseInt(id.substr(6,10));
+                if (temp > lastMember) {
+                    lastMember = temp;
+                }
+            }
+        });
         var trMember = <?= CJSON::encode($this->renderPartial('partial/_item_familymember', array('id'=>'idRep','familyMember'=>new FamilyMember,'form'=>$form,'this'=>$this), true, false))?>;
         function addMember() {
             lastMember++;
@@ -86,7 +101,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 <?php $this->endWidget(); ?>
 
 <script>
-$(document).ready(function(){
-    $('input.required, textarea.required, input.number').focusout();
-});
+//$(document).ready(function(){
+//    $('input.required, textarea.required, input.number').focusout();
+//});
 </script>

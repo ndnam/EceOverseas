@@ -301,6 +301,7 @@ class Student extends CActiveRecord
         }
         
         public function afterSave() {
+            $this->afterFind();
             if (empty($this->medicalInfo)) {
                 $medicalInfo = new MedicalInfo;
                 $medicalInfo->studentId = $this->id;

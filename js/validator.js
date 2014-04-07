@@ -1,4 +1,24 @@
 
+var modified = false;
+function markAsModified(){
+    if (!modified) {
+        $(window).bind('beforeunload', function(){ 
+            return 'You are navigating away. Make sure you have saved you data first.';
+        });
+        modified = true;
+    }
+}
+
+function initSaveFormConfirmation(){
+    $(document).ready(function(){
+        $('input, textarea, select').change(markAsModified);
+        $('.btn:not(.btn[type="submit"])').click(markAsModified);
+        $('button[type="submit"]').click(function(e){
+            $(window).unbind('beforeunload')
+        });
+    });
+}
+
 function initTabularItem(parent) {
     parent.find('input.required, textarea.required').focusout(validateRequired);
     parent.find('input.number').focusout(validateNumber);
@@ -7,6 +27,7 @@ function initTabularItem(parent) {
             $(this).removeAttr('title');
         }
     });
+    parent.find('.btn').click(markAsModified);
 }
 
 function validateRequired() {
