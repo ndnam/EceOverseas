@@ -108,7 +108,10 @@ class DictCountry extends CActiveRecord
 		return parent::model($className);
 	}
         
-        
+        /**
+         * Get list of country to populate dropdownlists
+         * @return array
+         */
         public static function getCountries() {
             $countryRecords =  self::model()->findAll();
             $countries = array();
@@ -116,5 +119,16 @@ class DictCountry extends CActiveRecord
                 $countries[$record['id']] = $record['name'];
             }
             return $countries;
+        }
+        
+        /**
+         * Get a country name
+         * @param integer $id
+         */
+        public static function getCountry($id) {
+            $country = self::model()->findByPk($id);
+            if ($country) {
+                return $country->name;
+            } else return null;
         }
 }

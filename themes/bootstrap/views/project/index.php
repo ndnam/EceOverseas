@@ -19,7 +19,7 @@ if (Yii::app()->user->staff->validate()) {
 if (count($relatedProjects) > 0) {
     foreach ($relatedProjects as $relatedProject) {
         $this->renderPartial('_project_view',array(
-            'data'=>$relatedProject,
+            'project'=>$relatedProject,
         ));
     }
 } else {
@@ -32,7 +32,7 @@ if (count($otherProjects) > 0) {
     echo '<h3>Other projects</h3>';
     foreach ($otherProjects as $otherProject) {
         $this->renderPartial('_project_view',array(
-            'data'=>$otherProject,
+            'project'=>$otherProject,
         ));
     }
 }

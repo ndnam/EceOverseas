@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/EceOverseas/js/script.js</file>
-            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/StudentController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/protected/controllers/UserController.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/user/view_student.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/user/profile_medical.php</file>
+            <file>file:/C:/xampp/htdocs/EceOverseas/themes/bootstrap/views/project/view.php</file>
         </group>
     </open-files>
 </project-private>

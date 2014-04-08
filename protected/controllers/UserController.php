@@ -204,7 +204,7 @@ class UserController extends Controller {
                             'projectStaffs'=>$projectStaffs,
                         ));
                     } else {
-                        $student = $user->student;
+                        $student = UserController::loadStudent($user->studentId);
                         $this->render('view_student',array(
                             'student'=>$student,
                         ));
@@ -280,12 +280,15 @@ class UserController extends Controller {
       }
      */
     
-    public static function loadStudent() {
+    public static function loadStudent($id=null) {
         /* @var $student Student */
         if (isset($_SESSION['student'])) {
             $student = $_SESSION['student'];
         } else {
-            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk(Yii::app()->user->studentId);
+            if (is_null($id)) {
+                $id = Yii::app()->user->studentId;
+            }
+            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk($id);
             $_SESSION['student'] = $student;
         }
         return $student;

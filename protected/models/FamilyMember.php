@@ -70,7 +70,7 @@ class FamilyMember extends CActiveRecord
 			'id' => 'ID',
 			'studentId' => 'Student',
 			'relationship' => 'Relationship',
-			'fullname' => 'Fullname',
+			'fullname' => 'Full Name',
 			'age' => 'Age',
 			'occupation' => 'Occupation',
 			'monthlyIncome' => 'Monthly Income',

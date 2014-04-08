@@ -309,7 +309,10 @@ class StudentController extends Controller {
         if (isset($_POST['StudentApplication'])) {
             $application->attributes = $_POST['StudentApplication'];
             $application->save();
-            $this->redirect(array('student/applications'));
+            $this->render('declaration',array(
+                'project'=>$project,
+            ));
+            Yii::app()->end();
         }
         
         $this->render('apply',array(
@@ -317,7 +320,7 @@ class StudentController extends Controller {
             'application'=>$application,
         ));
     }
-
+    
     /**
      * 
      * @param Object $items_posted

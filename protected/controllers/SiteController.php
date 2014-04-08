@@ -17,7 +17,7 @@ class SiteController extends Controller
                     'users'=>array('*'),
                 ),
                 array('allow',  
-                    'actions'=>array('index','logout'),
+                    'actions'=>array('index','logout','download'),
                     'users'=>array('@'),
                 ),
                 array('deny',  // deny all users
@@ -54,7 +54,7 @@ class SiteController extends Controller
 		if (Yii::app()->user->accountType == User::TYPE_STUDENT){
                     $this->redirect(array('student/publicProjects'));
                 } else {
-                    $this->redirect(array('project/index'));
+                    $this->redirect(array('project/'));
                 }
 	}
 
@@ -137,4 +137,12 @@ class SiteController extends Controller
                 unset($_SESSION['student']);
 		$this->redirect(Yii::app()->homeUrl);
 	}
+        
+        /**
+         * Allow user to download a file from \files folder
+         * @param string $fname
+         */
+        public function actionDownload($fname) {
+            Yii::app()->request->sendFile($fname, file_get_contents(Yii::getPathOfAlias('webroot').'\files\\'.$fname));
+        }
 }

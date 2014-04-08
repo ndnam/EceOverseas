@@ -269,4 +269,8 @@ class Project extends CActiveRecord
         public function getDeadlinePassed() {
             return time() > strtotime(ModelHelper::convertDateForSave($this->deadline));
         }
+        
+        public function getUrl() {
+            return Yii::app()->baseUrl.'/project/'.$this->id;
+        }
 }

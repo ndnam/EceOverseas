@@ -179,7 +179,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($student,'housingType'); ?>
-		<?php echo $form->dropdownList($student,'housingType',Dictionary::items(Dictionary::TYPE_HOUSING_TYPE)); ?>
+		<?php echo $form->dropdownList($student,'housingType',Dictionary::items(Dictionary::TYPE_HOUSING)); ?>
 		<?php echo $form->error($student,'housingType'); ?>
 	</div>
 

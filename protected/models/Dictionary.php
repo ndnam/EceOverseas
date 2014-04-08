@@ -18,7 +18,7 @@ class Dictionary extends CActiveRecord
         const TYPE_SWIMMING_ABILITY = 4;
         const TYPE_TSHIRT_SIZE = 5;
         const TYPE_BLOOD_GROUP = 6;
-        const TYPE_HOUSING_TYPE = 7;
+        const TYPE_HOUSING = 7;
         const TYPE_PROJECT_STATUS = 8;
         
 	/**

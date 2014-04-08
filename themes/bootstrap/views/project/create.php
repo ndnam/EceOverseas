@@ -2,6 +2,7 @@
 /* @var $this ProjectController */
 /* @var $project Project */
 /* @var $location Location */
+/* @var $form TbActiveForm */
 
 $this->breadcrumbs=array(
 	'Project'=>array('/project'),
@@ -24,7 +25,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         <?= $form->textAreaRow($project, 'description'); ?>
         <?= $form->datepickerRow($project,'startDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
         <?= $form->datepickerRow($project,'endDate',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
-        <?= $form->textAreaRow($project, 'teamSize'); ?>
+        <?= $form->textFieldRow($project, 'teamSize', array('style'=>'width:50px')) ?>
         <?= $form->datepickerRow($project,'deadline',array('options' => array('format'=>'dd/mm/yyyy'), 'htmlOptions'=>array('placeholder'=>'dd/mm/yyyy','style'=>'width:100px'))); ?>
         <?= $form->dropDownListRow($project, 'locationId',Location::loadLocations()); ?>
 

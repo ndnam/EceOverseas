@@ -40,10 +40,11 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         <?= $form->dropDownListRow($student, 'swimmingAbility',Dictionary::items(Dictionary::TYPE_SWIMMING_ABILITY), array('style'=>'width:100px')); ?>
         <?= $form->textAreaRow($student, 'homeAddress',array('maxlength'=>200)); ?>
         <?= $form->textFieldRow($student, 'postalCode',array('maxlength'=>10)); ?>
-        <?= $form->dropDownListRow($student, 'housingType',Dictionary::items(Dictionary::TYPE_HOUSING_TYPE), array('style'=>'width:100px')); ?>
+        <?= $form->dropDownListRow($student, 'housingType',Dictionary::items(Dictionary::TYPE_HOUSING), array('style'=>'width:100px')); ?>
         <?= $form->textFieldRow($student, 'personalEmail',array('maxlength'=>50)); ?>
         <?= $form->textFieldRow($student, 'mobilePhone',array('maxlength'=>20)); ?>
         <?= $form->textFieldRow($student, 'homePhone',array('maxlength'=>20)); ?>
+        <?= $form->fileFieldRow($student, 'picture'); ?>
         
         <div class="form-actions">
             <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Save')); ?>
