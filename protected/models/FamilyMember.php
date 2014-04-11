@@ -17,7 +17,7 @@
  * The followings are the available model relations:
  * @property Student $student
  */
-class FamilyMember extends ActiveRecord
+class FamilyMember extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -120,5 +120,12 @@ class FamilyMember extends ActiveRecord
         
         public function __toString() {
             return (string)$this->id;
+        }
+        
+        public function beforeSave() {
+            $this->modified = NULL;
+            if ($this->isNewRecord) 
+                $this->created = NULL;
+            return parent::beforeSave();;
         }
 }

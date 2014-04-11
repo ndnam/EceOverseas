@@ -19,7 +19,7 @@
  * @property DictCountry $country0
  * @property Student $student
  */
-class PastTrip extends ActiveRecord
+class PastTrip extends CActiveRecord
 {
         public function __construct($scenario = 'insert') {
             parent::__construct($scenario);
@@ -130,5 +130,12 @@ class PastTrip extends ActiveRecord
         
         public function __toString() {
             return (string)$this->id;
+        }
+        
+        public function beforeSave() {
+            $this->modified = NULL;
+            if ($this->isNewRecord) 
+                $this->created = NULL;
+            return parent::beforeSave();;
         }
 }

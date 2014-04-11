@@ -93,12 +93,12 @@ $(document).ready(function(){
         var picture = document.getElementById('profile-pic');
         if (!file.type.match(imageRegex)) {
             js:bootbox.alert('File type invalid. You must upload an image file.');
-            picture.src = '/EceOverseas/site/download?type=private&path=ndn/photo';
+            picture.src = '/EceOverseas/site/download?type=private&path=<?=Yii::app()->user->username?>/photo';
             return;
         }
         if (file.size > 10485760) {
             js:bootbox.alert('File too large. File size must be less than 10MB.');
-            picture.src = '/EceOverseas/site/download?type=private&path=ndn/photo';
+            picture.src = '/EceOverseas/site/download?type=private&path=<?=Yii::app()->user->username?>/photo';
             return;
         }
         // Display the selected 
@@ -118,12 +118,12 @@ $(document).ready(function(){
         var picture = document.getElementById('passport-img');
         if (!file.type.match(imageRegex)) {
             js:bootbox.alert('File type invalid. You must upload an image file.');
-            picture.src = '/EceOverseas/site/download?type=private&path=ndn/passport';
+            picture.src = '/EceOverseas/site/download?type=private&path=<?=Yii::app()->user->username?>/passport';
             return;
         }
         if (file.size > 10485760) {
             js:bootbox.alert('File too large. File size must be less than 10MB.');
-            picture.src = '/EceOverseas/site/download?type=private&path=ndn/passport';
+            picture.src = '/EceOverseas/site/download?type=private&path=<?=Yii::app()->user->username?>/passport';
             return;
         }
         // Hide error message

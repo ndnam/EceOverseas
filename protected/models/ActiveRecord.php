@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Inherit CActiveRecord
+ * Extend this class to be able to save only the validated attributes
  * @property string $created
  * @property string $modified
  * @author Ndnam
