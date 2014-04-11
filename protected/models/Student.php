@@ -352,6 +352,9 @@ class Student extends ActiveRecord
             
             $imageType = $file->type;
             $tempSrc = $file->tempName;
+            if (!file_exists($tempSrc)) {
+                return false;
+            }
             switch(strtolower($imageType)) {
                 case 'image/png':
                     //Create a new image from file
