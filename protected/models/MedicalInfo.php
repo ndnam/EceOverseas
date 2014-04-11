@@ -34,7 +34,7 @@
  * The followings are the available model relations:
  * @property Student $student
  */
-class MedicalInfo extends CActiveRecord
+class MedicalInfo extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -60,11 +60,6 @@ class MedicalInfo extends CActiveRecord
 			array('id, studentId, heartProblem, fits, faintingSpell, diabetes, asthma, migraine, visionProblem, colorBlind, earProblem, fractures, dislocations, carrierStatus, otherMedicalHistory, currentMedications, otherMedicalConditions, physicalDisabilities, allergies, vegetarian, halal, noSeafood, noBeef, otherFoodRestrictions, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
-
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
 
 	/**
 	 * @return array relational rules.
@@ -174,11 +169,4 @@ class MedicalInfo extends CActiveRecord
 		return parent::model($className);
 	}
         
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
-                
 }

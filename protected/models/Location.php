@@ -14,7 +14,7 @@
  * The followings are the available model relations:
  * @property Project[] $projects
  */
-class Location extends CActiveRecord
+class Location extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -41,11 +41,6 @@ class Location extends CActiveRecord
 		);
 	}
         
-        public function behaviors() {
-              return array( 'EAdvancedArBehavior' => array(
-                    'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
-
 	/**
 	 * @return array relational rules.
 	 */
@@ -113,13 +108,6 @@ class Location extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
         
         /**
          * return an array of locations

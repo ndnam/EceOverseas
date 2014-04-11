@@ -90,7 +90,7 @@
             <?php echo $form->labelEx($model,'locationId',array('class'=>'control-label')); ?>
             <div class="controls">
                 <p class="help-block attr-value"><?= CHtml::encode($model->location->name) ?></p>
-		<?php echo $form->dropdownList($model,'locationId',Location::loadLocations(),array('class'=>'hide')); ?>
+		<?php echo $form->dropdownList($model,'locationId',Location::loadLocations(),array('class'=>'hide','initial-value'=>$model->locationId)); ?>
             </div>
 	</div>
         
@@ -98,7 +98,7 @@
             <?php echo $form->labelEx($model,'status',array('class'=>'control-label')); ?>
             <div class="controls">
                 <p class="help-block attr-value"><?= Dictionary::item(Dictionary::TYPE_PROJECT_STATUS,$model->status) ?></p>
-                <?php echo $form->dropdownList($model,'status',Dictionary::items(Dictionary::TYPE_PROJECT_STATUS),array('class'=>'hide','style'=>'width:100px')); ?>
+                <?php echo $form->dropdownList($model,'status',Dictionary::items(Dictionary::TYPE_PROJECT_STATUS),array('class'=>'hide','style'=>'width:100px','initial-value'=>$model->status)); ?>
             </div>
         </div>
     

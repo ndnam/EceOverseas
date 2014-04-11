@@ -89,11 +89,15 @@ $(document).ready(function(){
         //Perform ajax update here
         $.post('',$('#project-edit-form').serialize(),function(data){
             if (data.status == 1) {
-                $this.parents('form').find('input[type="text"], textarea').each(function(){
+                $this.parents('form').find('input, textarea').each(function(){
                     $(this).parents('.controls').find('p.attr-value').text($(this).val());
                 });
                 $this.parents('form').find('select').each(function(){
-                    $(this).parents('.controls').find('p.attr-value').text($(this).find('option:selected').text());
+                    var select = $(this);
+                    $(this).parents('.controls').find('p.attr-value').each(function(){
+                        $(this).text(select.find('option:selected').text());
+                        $(this).attr('initial-value',select.val()); 
+                    });
                 });
                 $this.parents('form').find('input[type="text"], select, textarea').hide();
                 $this.parents('form').find('p.attr-value').show();
@@ -114,8 +118,26 @@ $(document).ready(function(){
     });
     
     $('#btn-cancel').click(function(){
-        $(this).parents('form').find('input[type="text"], select, textarea').hide();
-        $(this).parents('form').find('p.attr-value').show();
+        $form = $(this).parents('form');
+        $form.find('input, select, textarea').hide();
+        $form.find('p.attr-value').show();
+        // Repopulate the form with initial values
+        $(this).parents('form').find('p.attr-value').each(function(){
+            var $input = $(this).parents('.controls').find('input, textarea');
+            var initialValue;
+            if ($input.length > 0) {
+                initialValue = $(this).html();
+            } else {
+                $input = $(this).parents('.controls').find('select');
+                initialValue = $input.attr('initial-value');
+            }
+            $input.val(initialValue);
+            $(this).show();
+        });
+        // Remove the error messages
+        $form.find('.error').removeClass('error');
+        $form.find('.help-inline').html('').hide();
+        
         $('#btn-update-project, #btn-cancel').hide();
         $('#btn-edit-project').show();
     });
@@ -165,6 +187,7 @@ $(document).ready(function(){
                         $('.groupAddStaff').before(data.staff);
                         initStaffEditBtns(data.staffId);
                         resetStaffListIndex();
+                        $('.btn-changerole').show();
                     } else 
                         if (data.message) alert(data.message);
                     reloadStaffSelect();
@@ -181,6 +204,9 @@ $(document).ready(function(){
                 window.location.href = '/EceOverseas/student/deleteApp/' + $this.attr('appId');
         });
     });
+    
+    
+    
 });
 
 function initStaffEditBtns(staffId) {
@@ -224,6 +250,9 @@ function initStaffEditBtns(staffId) {
                             }
                             btnRemoveStaff.parents('tr').detach();
                             resetStaffListIndex();
+                            if ($('.listIndex').length == 1) {
+                                $('.btn-changerole').hide();
+                            }
                         } else 
                             alert(data.message);
                         reloadStaffSelect();
@@ -274,4 +303,17 @@ function initPastTripForm(parent) { //parent is selector
             inputAmount.prop('disabled',true);
         }
     });
+}
+
+function setProfilePicHolderHeight(){
+    var picHeight = $("#profile-pic").height();
+    if (picHeight < 30) 
+        picHeight = 360;
+    // Set profile pic holder height
+    $('.profile-pic-holder').height(picHeight + 60);
+    // Set ajax loader height
+    $('.profile-pic-holder .ajax-loader').height(picHeight);
+    // Set warning position
+    $('.profile-pic-holder .warning').attr('style','top:' + (picHeight + 10) + 'px');
+    console.log(picHeight);
 }

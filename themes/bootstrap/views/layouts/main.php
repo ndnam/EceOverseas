@@ -24,8 +24,8 @@
         if (strlen($fullName) > 0) 
             $fullName = '('.$fullName.')';
         $menuItems = array(
-            array('label'=>'Projects', 'url'=>array($user->accountType == User::TYPE_STUDENT ? '/student/publicProjects' : 'project/index')),
-            array('label'=>'Profile '.$fullName, 'url'=>array('/user/'.$user->username)),
+            array('label'=>'Projects', 'url'=>array($user->accountType == User::TYPE_STUDENT ? '/student/publicProjects' : 'project/index'),'active'=>  in_array($this->uniqueid,['student','project'])),
+            array('label'=>'Profile '.$fullName, 'url'=>array('/user/'.$user->username),'active'=> strpos(Yii::app()->request->requestUri,'user/'.Yii::app()->user->username) !== FALSE),
             array('label'=>'Logout', 'url'=>array('/site/logout'))
         );
     }
@@ -42,6 +42,7 @@
 
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+//                        'homeLink'=>'<a href="' . Yii::app()->baseUrl . '"><i class="icon-home"></i> Home</a>',
 			'links'=>$this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
 	<?php endif?>

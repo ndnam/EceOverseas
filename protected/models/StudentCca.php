@@ -17,7 +17,7 @@
  * The followings are the available model relations:
  * @property Student $student
  */
-class StudentCca extends CActiveRecord
+class StudentCca extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -43,11 +43,6 @@ class StudentCca extends CActiveRecord
 			array('id, studentId, isInNP, period, organization, position, description, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
-
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
 
 	/**
 	 * @return array relational rules.
@@ -122,13 +117,6 @@ class StudentCca extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
         
         public function __toString() {
             return (string)$this->id;

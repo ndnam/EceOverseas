@@ -15,7 +15,7 @@
  * @property Project $project
  * @property Staff $staff
  */
-class ProjectStaff extends CActiveRecord
+class ProjectStaff extends ActiveRecord
 {
         const ROLE_LEADER = 1;
         const ROLE_SUPPORT = 2;
@@ -114,13 +114,11 @@ class ProjectStaff extends CActiveRecord
 	}
         
         public function beforeSave() {
-            $this->modified = NULL;
             if ($this->isNewRecord) {
-                $this->created = NULL;
                 if (count(ProjectStaff::model()->findAllByAttributes(array('projectId'=>$this->projectId,'staffId'=>$this->staffId))) > 0) 
                     throw new CDbException('Staff has already been assigned to this project');
             }
-            return true;
+            return parent::beforeSave();
         }
         
         public static function leaderCount($projectId) {

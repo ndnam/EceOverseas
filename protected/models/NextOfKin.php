@@ -46,11 +46,6 @@ class NextOfKin extends CActiveRecord
 		);
 	}
 
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
-
 	/**
 	 * @return array relational rules.
 	 */
@@ -127,19 +122,43 @@ class NextOfKin extends CActiveRecord
 		return parent::model($className);
 	}
         
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
-        
         public function beforeValidate() {
             $this->clearErrors();
             if (empty($this->email) && empty($this->mobilePhone) && empty($this->officePhone) && empty($this->homePhone)) {
                 $this->addError('contactMethod', 'You need to provide at least one contact method');
-                return false;
             }
             return parent::beforeValidate();
+        }
+        
+        public function beforeSave() {
+            $this->modified = NULL;
+            if ($this->isNewRecord) 
+                $this->created = NULL;
+            return parent::beforeSave();
+        }
+        
+        public function save($attributes=null) {
+            $attrs = array();
+            // Always run validation
+            $this->validate();
+            if ($attributes) {
+                // Filter the validated attributes
+                foreach ($attributes as $attribute) {
+                    if (!$this->hasErrors($attribute)) {
+                        array_push($attrs, $attribute);
+                    }
+                }
+            } else {
+                // Get the array of validated attributes
+                foreach ($this->attributes as $name=>$value) {
+                    if (!$this->hasErrors($name)) {
+                        array_push($attrs, $name);
+                    }
+                }
+            }
+            if ($this->hasErrors('contactMethod')) {
+                $attrs = array_diff($attrs, ['mobilePhone','officePhone','homePhone','email']);
+            }
+            parent::save(false, $attrs); //Save to database whether validation passed or not
         }
 }

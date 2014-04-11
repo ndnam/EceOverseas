@@ -17,7 +17,7 @@ function markAsModified(){
 function initSaveFormConfirmation(){
     $(document).ready(function(){
         $('input, textarea, select').change(markAsModified);
-        $('.btn:not(.btn[type="submit"])').click(markAsModified);
+        $('.btn:not(.file-upload)').click(markAsModified);
         $('button[type="submit"]').click(function(e){
             $(window).unbind('beforeunload')
         });

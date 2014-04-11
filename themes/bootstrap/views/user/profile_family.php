@@ -8,6 +8,10 @@ $this->breadcrumbs = array(
     'Profile',
 );
 
+if (Yii::app()->request->requestType == 'GET') {
+    $nextOfKin->clearErrors();
+    $nextOfKin->beforeValidate(); // Show the contact method warning
+}
 $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	'id'=>'family-form',
         'type'=>'horizontal',
@@ -30,7 +34,9 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     <?= $form->textFieldRow($nextOfKin, 'homePhone'); ?>
 
     <div class="control-group">
-        <?php echo $form->error($nextOfKin, 'contactMethod'); ?>
+        <div class="controls">
+            <?php echo $form->error($nextOfKin, 'contactMethod'); ?>
+        </div>
     </div>
 
 </fieldset>

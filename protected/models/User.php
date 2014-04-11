@@ -31,11 +31,6 @@ class User extends CActiveRecord
 		return 'user';
 	}
 
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */

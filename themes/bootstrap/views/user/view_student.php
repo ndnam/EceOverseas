@@ -17,6 +17,19 @@ fieldset {
 
 <h2><center><?=$student->fullname?>'s Profile</center></h2>
 
+<div class="student-photos">
+    <div class="photo-box" id="student-photo">
+        <?= CHtml::image(Yii::app()->baseUrl.'/site/download?type=private&path='.$student->user->username.'/photo','Profile picture')?>
+        <label>Profile picture</label>
+    </div>
+    
+    <div class="photo-box" id="passport-photo">
+        <?= CHtml::image(Yii::app()->baseUrl.'/site/download?type=private&path='.$student->user->username.'/passport','Profile picture')?>
+        <label>Passport</label>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
 <fieldset>
 
     <legend>Student Info</legend>

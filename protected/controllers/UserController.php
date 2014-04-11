@@ -49,12 +49,11 @@ class UserController extends Controller {
                         }
                         if (isset($_POST['Student'])) {
                             $student->attributes = $_POST['Student'];
+                            $student->photo = CUploadedFile::getInstance($student,'photo');
+                            $student->passport = CUploadedFile::getInstance($student,'passport');
                             $student->isNewRecord = false;
                             $student->save();
-                        } 
-//                        if ($student->created != $student->modified) { //The record has been modified
-//                            $student->validate();
-//                        }
+                        }
                         $this->render('profile_student', array(
                             'student' => $student,
                         ));
@@ -70,9 +69,6 @@ class UserController extends Controller {
                             $medicalInfo->isNewRecord = false;
                             $medicalInfo->save();
                         } 
-//                        if ($medicalInfo->created != $medicalInfo->modified) { //The record has been modified
-//                            $medicalInfo->validate();
-//                        }
                         $this->render('profile_medical', array(
                             'medicalInfo' => $medicalInfo,
                         ));
@@ -90,14 +86,12 @@ class UserController extends Controller {
                                     if (!$discardedCca->isNewRecord) $discardedCca->delete();
                                 }
                                 foreach ($newCcas as $newCca) {
-                                    if ($newCca->validate()) {
-                                        if (is_numeric($newCca->id)) { // If ID is integer number
-                                            $newCca->isNewRecord = false;
-                                        } else {
-                                            $newCca->id = null;
-                                        }
-                                        $newCca->save(false);
+                                    if (is_numeric($newCca->id)) { // If ID is integer number, user is modifying an old record 
+                                        $newCca->isNewRecord = false;
+                                    } else {
+                                        $newCca->id = null; // If ID is like new*, it is a new record
                                     }
+                                    $newCca->save();
                                 }
                                 $student->studentCcas = $studentCcas = $newCcas;
                             } else {
@@ -114,14 +108,12 @@ class UserController extends Controller {
                                     if (!$discardedPastTrip->isNewRecord) $discardedPastTrip->delete();
                                 }
                                 foreach ($newPastTrips as $newPastTrip) {
-                                    if ($newPastTrip->validate()) {
-                                        if (is_numeric($newPastTrip->id)) { // If ID is integer number
-                                            $newPastTrip->isNewRecord = false;
-                                        } else {
-                                            $newPastTrip->id = null;
-                                        }
-                                        $newPastTrip->save(false);
+                                    if (is_numeric($newPastTrip->id)) { // If ID is integer number
+                                        $newPastTrip->isNewRecord = false;
+                                    } else {
+                                        $newPastTrip->id = null;
                                     }
+                                    $newPastTrip->save();
                                 }
                                 $student->pastTrips = $pastTrips = $newPastTrips;
                             } else {
@@ -150,12 +142,7 @@ class UserController extends Controller {
                                 $nextOfKin->attributes = $_POST['NextOfKin'];
                                 $nextOfKin->isNewRecord = false;
                                 $nextOfKin->save();
-                            }  else {
-                                $nextOfKin->refresh();
-                            }
-    //                        if ($nextOkKin->created != $nextOkKin->modified) { //The record has been modified
-    //                            $nextOkKin->validate();
-    //                        }
+                            } 
                             // Process Family Members
                             if (isset($_POST['FamilyMember'])) {
                                 $newMembers = UserController::assignRelatedModels($_POST['FamilyMember'], 'FamilyMember');
@@ -164,14 +151,12 @@ class UserController extends Controller {
                                     if (!$discardedMembers->isNewRecord) $discardedMembers->delete();
                                 }
                                 foreach ($newMembers as $newMember) {
-                                    if ($newMember->validate()) {
-                                        if (is_numeric($newMember->id)) { // If ID is integer number
-                                            $newMember->isNewRecord = false;
-                                        } else {
-                                            $newMember->id = null;
-                                        }
-                                        $newMember->save(false);
+                                    if (is_numeric($newMember->id)) { // If ID is integer number
+                                        $newMember->isNewRecord = false;
+                                    } else {
+                                        $newMember->id = null;
                                     }
+                                    $newMember->save();
                                 }
                                 $student->familyMembers = $familyMembers = $newMembers;
                             } else {
@@ -213,7 +198,7 @@ class UserController extends Controller {
             } else throw new CHttpException(403);
         }
     }
-
+    
     /**
      * View another user's info
      * This is not an action, just kind of an action helper
@@ -280,17 +265,29 @@ class UserController extends Controller {
       }
      */
     
+    /**
+     * if ($id == null) get student and set to Session
+     * else: just get student
+     * @param integer $id
+     * @return Student
+     */
     public static function loadStudent($id=null) {
         /* @var $student Student */
-        if (isset($_SESSION['student'])) {
-            $student = $_SESSION['student'];
+        $student = null;
+        if ($id) {
+            unset($_SESSION['student']);
+            $setSession = false;
         } else {
-            if (is_null($id)) {
-                $id = Yii::app()->user->studentId;
+            $setSession = true;
+            $id = Yii::app()->user->studentId;
+            if (isset($_SESSION['student'])) {
+                $student = $_SESSION['student'];
             }
-            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk($id);
-            $_SESSION['student'] = $student;
         }
+        if (is_null($student))
+            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers','user')->findByPk($id);
+        if ($setSession)
+            $_SESSION['student'] = $student;
         return $student;
     }
 }

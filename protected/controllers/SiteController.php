@@ -139,10 +139,50 @@ class SiteController extends Controller
 	}
         
         /**
-         * Allow user to download a file from \files folder
-         * @param string $fname
+         * Allow user to download a file from /files folder
+         * File type:
+         *  - Public: files in /files/public folder.
+         *  - Private: files in /files/user folder. 
+         * $path must not have slash at the begining.
+         * (I use forward slash for file path)
+         * @param string $type 
+         * @param string $path
          */
-        public function actionDownload($fname) {
-            Yii::app()->request->sendFile($fname, file_get_contents(Yii::getPathOfAlias('webroot').'\files\\'.$fname));
+        public function actionDownload($type,$path) {
+            if (strrpos($path,'/') === FALSE) 
+                $filename = $path;
+            else 
+                $filename = substr($path,strrpos($path,'/')+1,255);
+            
+            switch ($type) {
+                case 'public': 
+                    Yii::app()->request->sendFile($filename, file_get_contents(Yii::getPathOfAlias('webroot').'/files/public/'.$path));
+                    break;
+                case 'private':
+                    $targetUser = substr($path, 0, strpos($path,'/'));
+                    // Only staff account is allowed to acccess another user's private file
+                    if ($targetUser == Yii::app()->user->username || Yii::app()->user->accountType == User::TYPE_STAFF) { 
+                        $fullPath = Yii::getPathOfAlias('webroot').'/files/user/'.$path;
+                        // If requesting user profile picture and it doesn't exist, send the default one.
+                        if (!file_exists($fullPath)) {
+                            switch($filename) {
+                                case 'photo': Yii::app()->request->sendFile('photo',file_get_contents(Yii::getPathOfAlias('webroot').'/files/user/default_profile_pic.png')); break;
+                                case 'passport': Yii::app()->request->sendFile('photo',file_get_contents(Yii::getPathOfAlias('webroot').'/files/user/default_passport.jpg')); break;
+                            }
+                        } else
+                            Yii::app()->request->sendFile($filename, file_get_contents($fullPath));
+                    } else throw new CHttpException(403);
+                    break;
+            }
+        }
+        
+        /**
+         * Receive a file uploaded from client
+         * @param string $type 'photo'|'passport'
+         * @param string $username 
+         * @param string $format 'json'
+         */
+        public function actionUpload($type,$username,$format) {
+            
         }
 }

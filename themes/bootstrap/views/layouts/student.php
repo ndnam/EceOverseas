@@ -18,7 +18,7 @@ $action = $this->action->id;
                     array('label'=>'PROJECTS'),
                     array('label'=>'Public Projects','icon'=>'list','url'=>Yii::app()->baseUrl.'/student/publicProjects','active'=>$action=='publicprojects'),
                     array('label'=>'My Applications','icon'=>'list-alt','url'=>Yii::app()->baseUrl.'/student/applications','active'=>$action=='applications'),
-                    array('label'=>'Download Declaration Form','icon'=>'list-alt','url'=>Yii::app()->baseUrl.'/site/download?fname=YEP Declaration and Idemnity Form.pdf'),
+                    array('label'=>'Download Declaration Form','icon'=>'download','url'=>Yii::app()->baseUrl.'/site/download?type=public&path=YEP Declaration and Idemnity Form.pdf'),
                 ),
             ));
         ?>

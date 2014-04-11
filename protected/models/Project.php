@@ -156,11 +156,12 @@ class Project extends CActiveRecord
             $this->modified = NULL;
             if ($this->isNewRecord) 
                 $this->created = NULL;
+            
             $isOK = true;
             if (empty($this->locationId)) {
                 $isOK = false;
             }
-            return $isOK;
+            return parent::beforeSave() && $isOK;
         }
         
         public function afterFind() {

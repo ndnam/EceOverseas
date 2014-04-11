@@ -11,14 +11,18 @@ class ModelHelper {
         $myDateTime = DateTime::createFromFormat('d/m/Y', $date);
         if ($myDateTime) {
             return $myDateTime->format('Y-m-d');
-        } else return false;
+        } 
+        return null;
     }
     
     public static function convertDateForDisplay($date) {
-        $myDateTime = DateTime::createFromFormat('Y-m-d', $date);
-        if ($myDateTime) {
-            return $myDateTime->format('d/m/Y');
-        } else return false;
+        if (strtotime($date)) {
+            $myDateTime = DateTime::createFromFormat('Y-m-d', $date);
+            if ($myDateTime) {
+                return $myDateTime->format('d/m/Y');
+            } 
+        }
+        return null;
     }
     
 }

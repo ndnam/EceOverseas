@@ -62,9 +62,9 @@ if ($model->status == Project::STATUS_NEW) {
     <div class="btn-group">
         <a href="javascript:;" class="btn btn-info" id="btnSelectAllApps">Select all</a>
         <a href="javascript:;" class="btn btn-info" id="btnClearApps">Clear selection</a>
-        <a href="javascript:;" class="btn btn-warning" class="btnChangeAppStt" id="2Shortlisted">Shortlist</a>
-        <a href="javascript:;" class="btn btn-warning" class="btnChangeAppStt" id="3Confirmed">Confirm</a>
-        <a href="javascript:;" class="btn btn-warning" class="btnChangeAppStt" id="0Rejected">Reject</a>
+        <a href="javascript:;" class="btn btn-warning btnChangeAppStt" id="2Shortlisted">Shortlist</a>
+        <a href="javascript:;" class="btn btn-warning btnChangeAppStt" id="3Confirmed">Confirm</a>
+        <a href="javascript:;" class="btn btn-warning btnChangeAppStt" id="0Rejected">Reject</a>
     </div>
     <?php }
     } else {
@@ -85,12 +85,14 @@ if ($model->status == Project::STATUS_NEW) {
         </tr>
         <?php 
         $i = 0;
+        $soleAdmin = count($staffs) == 1; // If there is only one admin in the project
         foreach ($staffs as $staff) {
             $i++;
             $this->renderPartial('_project_staff_view',array(
                 'data'=>$staff,
                 'index'=>$i,
                 'staffRole'=>$staffRole,
+                'hideButtons'=>$soleAdmin,
             ));
         }
 

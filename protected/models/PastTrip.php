@@ -19,7 +19,7 @@
  * @property DictCountry $country0
  * @property Student $student
  */
-class PastTrip extends CActiveRecord
+class PastTrip extends ActiveRecord
 {
         public function __construct($scenario = 'insert') {
             parent::__construct($scenario);
@@ -50,11 +50,6 @@ class PastTrip extends CActiveRecord
 			array('id, studentId, programName, country, duration, capacity, isSubsidized, amount, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
-
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
 
 	/**
 	 * @return array relational rules.
@@ -132,13 +127,6 @@ class PastTrip extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
         
         public function __toString() {
             return (string)$this->id;

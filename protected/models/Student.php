@@ -43,8 +43,12 @@
  * @property StudentCca[] $studentCcas
  * @property Project[] $projects
  */
-class Student extends CActiveRecord
+class Student extends ActiveRecord
 {
+        // Stores the profile picture and passport photo
+        public $photo;
+        public $passport;
+        
         public function __construct() {
             parent::__construct();
             $this->issuingCountry = 492;
@@ -104,27 +108,13 @@ class Student extends CActiveRecord
         }
         
         /**
-         * Overide validate
-         * @param array $attributes
-         * @param Boolean $clearErrors
-         */
-//        public function validate($attributes = null, $clearErrors = true) {
-//            return  parent::validate($attributes, $clearErrors)
-//                    && $this->validateRelated($this->medicalInfo)
-//                    && $this->validateRelated($this->studentCcas)
-//                    && $this->validateRelated($this->pastTrips)
-//                    && $this->validateRelated($this->nextOfKin)
-//                    && $this->validateRelated($this->familyMembers);
-//        }
-        
-        /**
          * Validate related model(s)
          * $relatedModel == null | empty array -> return true
          * @param string|Object|array $relation
          * @return boolean
          */
         public function validateRelated($relation) {
-            $this->clearErrors();
+//            $this->clearErrors();
             if (is_string($relation)) {
                 $relation = $this->$relation;
             }
@@ -143,24 +133,6 @@ class Student extends CActiveRecord
                 } 
             }
             return true;
-        }
-        
-        /**
-         * Overide save
-         * @param Boolean $runValidation
-         * @param array $attributes
-         */
-        public function save($runValidation = true, $attributes = null) {
-            if ($runValidation) {
-                if ($this->validate($attributes) == false)
-                    return false;
-            }
-            return parent::save(false, $attributes);
-        }
-
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
         }
 
         /**
@@ -288,10 +260,7 @@ class Student extends CActiveRecord
             $this->birthday = ModelHelper::convertDateForSave($this->birthday);
             $this->issuingDate = ModelHelper::convertDateForSave($this->issuingDate);
             $this->expiryDate = ModelHelper::convertDateForSave($this->expiryDate);
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
+            return parent::beforeSave();;
         }
         
         public function afterFind() {
@@ -301,6 +270,7 @@ class Student extends CActiveRecord
         }
         
         public function afterSave() {
+            parent::afterSave();
             $this->afterFind();
             if (empty($this->medicalInfo)) {
                 $medicalInfo = new MedicalInfo;
@@ -312,6 +282,130 @@ class Student extends CActiveRecord
                 $nextOfKin->studentId = $this->id;
                 $nextOfKin->save();
             }
+        
+        }
+        
+        public function validate($attributes=null, $clearErrors=true) {
+            $valid = parent::validate($attributes, $clearErrors);
+            if (!$this->validateImage('photo')) {
+                $valid = false;
+            }
+            if (!$this->validateImage('passport')) {
+                $valid = false;
+            }
+            return $valid;
+        }
+        
+        /**
+         * 
+         * @param string $property 'photo'|'passport'
+         */
+        public function validateImage($property){
+            if (!$this->$property instanceof CUploadedFile) {
+                // If user didn't upload a picture but we already have the picture in server
+                if ($this->hasPicture($property)) {
+                    return true;
+                }
+                switch($property) {
+                    case 'photo': $message = 'You need to upload your photo'; break;
+                    case 'passport': $message = 'You need to upload a photo of your passport for validation of expiry date'; break;
+                }
+                $this->addError($property, $message);
+                return false;
+            } 
+            if ($this->$property->hasError) {
+                $this->addError($property, 'File upload failed');
+                return false;
+                
+            }
+            if (!preg_match('/image.*/', $this->$property->type)) 
+                return false;
+            
+            if ($this->$property->size > 10485760) 
+                return false;
+            
+            // If uploaded file is OK, save the image file
+            switch($property) {
+                case 'photo': $this->processImage('photo',960,960); break;
+                case 'passport': $this->processImage('passport',1600,1200); break;
+            }
+//            $filePath = Yii::getPathOfAlias('webroot').'/files/user/'.Yii::app()->user->username.'/';
+//            if ((!file_exists($filePath) and !is_dir($filePath)))
+//                mkdir($filePath,0777,true);
+//            $this->$property->saveAs($filePath.$property);
+            return true;
+        }
+        
+        /**
+         * Resize and save the image
+         * @param string $property 'photo'|'passport'
+         * @param integer $maxWidth Image max width
+         * @param integer $maxHeight Image max height
+         * return boolean Whether the process succeeded or not
+         */
+        public function processImage($property,$maxWidth,$maxHeight){
+            $filePath = Yii::getPathOfAlias('webroot').'/files/user/'.Yii::app()->user->username.'/';
+            if ((!file_exists($filePath) and !is_dir($filePath)))
+                mkdir($filePath,0777,true);
+            $fileName = $filePath.$property;
+            $file = $this->$property;
+            
+            $imageType = $file->type;
+            $tempSrc = $file->tempName;
+            switch(strtolower($imageType)) {
+                case 'image/png':
+                    //Create a new image from file
+                    $createdImage = imagecreatefrompng($tempSrc);
+                    break;
+                case 'image/gif':
+                    $createdImage = imagecreatefromgif($tempSrc);
+                    break;         
+                case 'image/jpeg':
+                case 'image/pjpeg':
+                    $createdImage = imagecreatefromjpeg($tempSrc);
+                    break;
+                default:
+                    return false;
+            }
+            //PHP getimagesize() function returns height/width from image file stored in PHP tmp folder.
+            //Get first two values from image, width and height.
+            //list assign svalues to $CurWidth,$CurHeight
+            list($curWidth, $curHeight) = getimagesize($tempSrc);
+            
+            // Begin resizing image
+            if($curWidth <= 0 || $curHeight <= 0) {
+                return false;
+            }
+            // Construct a proportional size of new image
+            $imageScale = min($maxWidth/$curWidth, $maxHeight/$curHeight);
+            // We only need to reduce image size
+            if ($imageScale < 1) {
+                $newWidth   = ceil($imageScale*$curWidth);
+                $newHeight  = ceil($imageScale*$curHeight);
+                $newCanvas  = imagecreatetruecolor($newWidth, $newHeight);
+                imagecopyresampled($newCanvas, $createdImage,0, 0, 0, 0, $newWidth, $newHeight, $curWidth, $curHeight);
+                switch(strtolower($imageType)) {
+                    case 'image/png':
+                        imagepng($newCanvas,$fileName);
+                        break;
+                    case 'image/gif':
+                        imagegif($newCanvas,$fileName);
+                        break;         
+                    case 'image/jpeg':
+                    case 'image/pjpeg':
+                        imagejpeg($newCanvas,$fileName,80);
+                        break;
+                    default:
+                        return false;
+                }
+                //Destroy image, frees memory  
+                if(is_resource($newCanvas)) 
+                    imagedestroy($newCanvas);
+            } else {
+                $this->$property->saveAs($fileName);
+            }
+            $this->$property = null;
+            return true;
         }
         
         public function getFullName() {
@@ -323,8 +417,17 @@ class Student extends CActiveRecord
          */
         public function getProfileErrors() {
             $errors = array();
-            if (!$this->validate())
+            if (!$this->validate() || !$this->hasPicture('photo') || !$this->hasPicture('passport')){
                 array_push ($errors, 'student');
+            }
+            
+            if (!$this->hasPicture('photo')) {
+                array_push ($errors, 'photo');
+            }
+            
+            if (!$this->hasPicture('passport')) {
+                array_push ($errors, 'passport');
+            }
             
             foreach (['familyMembers','nextOfKin','pastTrips','studentCcas'] as $relation) {
                 if (!$this->validateRelated($relation)) {
@@ -343,35 +446,6 @@ class Student extends CActiveRecord
                 array_push ($errors, 'cca');
             }
             
-//            if (!$this->medicalInfo->validate())
-//                array_push ($errors, 'medicalInfo');
-//            if (is_array($this->studentCcas)) {
-//                foreach($this->studentCcas as $studentCca) {
-//                    if (!$studentCca->validate()) {
-//                        array_push ($errors, 'studentCca');
-//                        break;
-//                    }
-//                }
-//            }
-//            if (is_array($this->pastTrips)) {
-//                foreach ($this->pastTrips as $pastTrip) {
-//                    if (!$pastTrip->validate()) {
-//                        array_push ($errors, 'pastTrip');
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!$this->nextOfKin->validate())
-//                array_push ($errors, 'nextOfKin');
-//            if (is_array($this->familyMembers)) {
-//                foreach ($this->familyMembers as $familyMembers) {
-//                    if (!$familyMembers->validate()) {
-//                        array_push ($errors, 'familyMembers');
-//                        break;
-//                    }
-//                }
-//            }
-            
             return $errors;
         }
         
@@ -385,4 +459,14 @@ class Student extends CActiveRecord
             }
             return false;
         }
+        
+        /**
+         * Check if student have uploaded pictures
+         * @param type $type 'photo'|'passport'
+         * @return boolean
+         */
+        public function hasPicture($type) {
+            return (file_exists(Yii::getPathOfAlias('webroot').'/files/user/'.$this->user->username.'/'.$type));
+        }
+        
 }

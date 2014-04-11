@@ -8,6 +8,6 @@ $this->breadcrumbs=array(
 );
 ?>
 
-<div class="hero-unit">
-    <p>You have successfully applied for <a href="<?=$project->url?>"><?=$project->title?></a> project. Now you need to download the <a href="<?=Yii::app()->baseUrl?>/site/download?fname=YEP Declaration and Idemnity Form.pdf">declaration form</a> and submit it to our office.</p>
+<div class="well">
+    <p>You have successfully applied for <a href="<?=$project->url?>"><?=$project->title?></a> project. Now you need to download the <a href="<?=Yii::app()->baseUrl?>/site/download?type=public&path=YEP Declaration and Idemnity Form.pdf">declaration form</a> and submit it to our office.</p>
 </div>

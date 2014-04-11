@@ -5,11 +5,11 @@ $this->breadcrumbs=array(
 	'Projects',
 );
 
-$this->menu = array(
-    array('label'=>'Manage Project Locations','icon'=>'list','url'=>Yii::app()->baseUrl.'/location/admin'),
-);
 if (Yii::app()->user->staff->validate()) {
-    array_push($this->menu, array('label'=>'Create Project','icon'=>'plus','url'=>Yii::app()->baseUrl.'/project/create'));
+    $this->menu = array(
+        array('label'=>'Manage Project Locations','icon'=>'list','url'=>Yii::app()->baseUrl.'/location/admin'),
+        array('label'=>'Create Project','icon'=>'plus','url'=>Yii::app()->baseUrl.'/project/create'),
+    );
 }
 ?>
 

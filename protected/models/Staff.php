@@ -15,7 +15,7 @@
  * The followings are the available model relations:
  * @property ProjectStaff[] $projectstaff
  */
-class Staff extends CActiveRecord
+class Staff extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -46,11 +46,6 @@ class Staff extends CActiveRecord
 			array('id, username, password, initial, fullName, email, phone, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
-
-        public function behaviors() {
-            return array('EAdvancedArBehavior' => array(
-                'class' => 'application.extensions.EAdvancedArBehavior'));
-        }
 
 	/**
 	 * @return array relational rules.
@@ -126,13 +121,6 @@ class Staff extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
         
         public static function getStaffList() {
             $criteria = new CDbCriteria;

@@ -17,7 +17,7 @@
  * @property Project $project
  * @property Student $student
  */
-class StudentApplication extends CActiveRecord
+class StudentApplication extends ActiveRecord
 {
         const STATUS_REJECTED = 0;
         const STATUS_PENDING = 1;
@@ -122,12 +122,5 @@ class StudentApplication extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function beforeSave() {
-            $this->modified = NULL;
-            if ($this->isNewRecord) 
-                $this->created = NULL;
-            return true;
-        }
         
 }

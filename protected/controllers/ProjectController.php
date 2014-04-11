@@ -252,6 +252,7 @@ class ProjectController extends Controller
                                     'data'=>ProjectStaff::model()->with('staff')->findByPk($projectStaffId),
                                     'index'=>0,
                                     'staffRole'=>$staffRole, // This is the current user's role in the project
+                                    'hideButtons'=>false,
                                 ),true),
                             ));
                         } else {
@@ -292,7 +293,7 @@ class ProjectController extends Controller
                         header('Content-type: application/json');
                         echo CJSON::encode(array(
                             'status'=>1,
-                            'refresh'=>1,
+                            'refresh'=>1, // Tell browser to reload the page
                         ));
                         Yii::app()->end();
                     }

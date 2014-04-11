@@ -2,6 +2,7 @@
 ## PHP Website using Yii Framework
 ################
 assets/*
+nbproject/*
 protected/runtime/*
 protected/data/*.db
 protected/tests/report/*

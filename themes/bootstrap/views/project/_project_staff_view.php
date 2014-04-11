@@ -2,6 +2,7 @@
 /* @var $data ProjectStaff */
 /* @var $index integer */
 /* @var $staffRole integer */
+/* @var $hideButtons boolean */
 $staff = Staff::model()->with('user')->findByPk($data->staffId);
 ?>
 <tr>
@@ -30,7 +31,7 @@ $staff = Staff::model()->with('user')->findByPk($data->staffId);
     <?php if ($staffRole == Project::ROLE_LEADER) { 
         $staffId = $staff->id;
     ?>
-        <td class="btn-group">
+        <td class="btn-group btn-changerole <?= $hideButtons ? 'hide' : ''?>">
             <a href="javascript:;" class="btn btn-info btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>
             <a href="javascript:;" class="btn btn-info btnEditStaff" id="btnEditStaff<?=$staffId ?>">Edit</a>
             <a href="javascript:;" class="btn btn-warning btnRemoveStaff" prjStaffId="<?= $data->id ?>" id="btnRemoveStaff<?=$staffId ?>">Remove</a>
