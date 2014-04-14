@@ -2,6 +2,7 @@
 /* @var $data ProjectStaff */
 /* @var $index integer */
 /* @var $staffRole integer */
+/* @var $hideButtons boolean */
 $staff = Staff::model()->with('user')->findByPk($data->staffId);
 ?>
 <tr>
@@ -11,26 +12,29 @@ $staff = Staff::model()->with('user')->findByPk($data->staffId);
         <?php 
         }?>
     </td>
-    
-    <td class="listIndex"><?= $index . '.' ?></td>
-    <td><?= CHtml::link(CHtml::encode($staff->fullName), array('user/'.$staff->user->username)) ?></td>
+    <td class="listIndex">
+        <?= $index . '.' ?>
+    </td>
+    <td>
+        <?= CHtml::link(CHtml::encode($staff->fullName), array('user/'.$staff->user->username)) ?>
+    </td>
     <td>
         <span class="staffRole"><?= Dictionary::item(Dictionary::TYPE_STAFF_ROLE, $data->role)?></span>
         <?= CHtml::dropDownList(
                 'roleSelect' . $data->id, 
                 $data->role, 
                 Dictionary::items(Dictionary::TYPE_STAFF_ROLE),
-                ['class'=>'roleSelect hide', 'projectStaffId'=>$data->id])
+                ['class'=>'roleSelect hide', 'projectStaffId'=>$data->id,'style'=>'width:160px'])
         ?>
     </td>
     
     <?php if ($staffRole == Project::ROLE_LEADER) { 
         $staffId = $staff->id;
     ?>
-        <td>
-            <a href="javascript:;" class="btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>
-            <a href="javascript:;" class="btnEditStaff" id="btnEditStaff<?=$staffId ?>">Edit</a>
-            <a href="javascript:;" class="btnRemoveStaff" prjStaffId="<?= $data->id ?>" id="btnRemoveStaff<?=$staffId ?>">Remove</a>
+        <td class="btn-group btn-changerole <?= $hideButtons ? 'hide' : ''?>">
+            <a href="javascript:;" class="btn btn-info btnDoneEditStaff hide" id="btnDoneEditStaff<?=$staffId ?>">Done</a>
+            <a href="javascript:;" class="btn btn-info btnEditStaff" id="btnEditStaff<?=$staffId ?>">Edit</a>
+            <a href="javascript:;" class="btn btn-warning btnRemoveStaff" prjStaffId="<?= $data->id ?>" id="btnRemoveStaff<?=$staffId ?>">Remove</a>
         </td>
     <?php 
     }?>

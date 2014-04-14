@@ -4,10 +4,9 @@
 /* @var $applications Application[]*/
 
 $this->breadcrumbs=array(
-	'Projects',
+	'Applications',
 );
 ?>
-<p><i>Your applications are considered invalid if you profile is not complete.</i></p>
 <?php
 if (count($applications) > 0) {
     foreach ($applications as $application) {

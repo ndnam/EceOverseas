@@ -3,45 +3,26 @@
 /* @var $staff Staff */
 
 $this->breadcrumbs=array(
-    'User',
     'Profile',
 );
 ?>
 <h2><center>Edit profile</center></h2>
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id'=>'staff-form',
+    'type'=>'horizontal',
     'enableAjaxValidation'=>true,
     'enableClientValidation'=>true,
 )); ?>
     
-    <div class="row">
-        <?php echo $form->labelEx($staff,'initial'); ?>
-        <?php echo $form->textField($staff,'initial',array('size'=>10,'maxlength'=>10)); ?>
-        <?php echo $form->error($staff,'initial'); ?>
-    </div>
+    <?= $form->textFieldRow($staff, 'initial', array('maxlength'=>10)); ?>
+    <?= $form->textFieldRow($staff, 'fullName', array('maxlength'=>100)); ?>
+    <?= $form->textFieldRow($staff, 'email', array('maxlength'=>50)); ?>
+    <?= $form->textFieldRow($staff, 'phone', array('maxlength'=>20)); ?>
     
-    <div class="row">
-        <?php echo $form->labelEx($staff,'fullName'); ?>
-        <?php echo $form->textField($staff,'fullName',array('size'=>30,'maxlength'=>100)); ?>
-        <?php echo $form->error($staff,'fullName'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($staff,'email'); ?>
-        <?php echo $form->textField($staff,'email',array('size'=>20,'maxlength'=>50)); ?>
-        <?php echo $form->error($staff,'email'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($staff,'phone'); ?>
-        <?php echo $form->textField($staff,'phone',array('size'=>20,'maxlength'=>20)); ?>
-        <?php echo $form->error($staff,'phone'); ?>
-    </div>
-    
-    <div class="row buttons">
-        <input type="submit" value="Save" name="btnSave" style="margin-left: 230px;">
+    <div class="form-actions">
+        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Save')); ?>
     </div>
     
 <?php $this->endWidget(); ?>

@@ -101,8 +101,8 @@ if ($model->status == Project::STATUS_NEW) {
                 <td></td>
                 <td></td>
                 <td>
-                    <?= CHtml::dropDownList('staffSelect', null, array_merge(array('Select Staff'), 
-                            ProjectController::toDropdownListArray(Project::getAvailableStaffs($model->id), 'id', 'fullName'))
+                    <?= CHtml::dropDownList('staffSelect', null, 
+                            ControllerHelper::toDropdownListArray(Project::getAvailableStaffs($model->id), 'id', 'fullName')
                     )?>
                 </td>
                 <td>

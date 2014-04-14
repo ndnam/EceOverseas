@@ -118,6 +118,7 @@ class ProjectController extends Controller
                     'staffs'=>$staffDataProvider->getData(),
                 ));
             } else {
+                $this->layout='//layouts/column3';
                 $this->render('view',array(
                     'project'=>$model,
                 ));
@@ -127,14 +128,14 @@ class ProjectController extends Controller
 	public function actionChangeStaffRole()
 	{
 	    if (!(isset($_POST['projectStaffId']) && isset($_POST['role']))) {
-                $this->returnError('Invalid request');
+                ControllerHelper::returnError('Invalid request');
             }
             
             $projectStaffId = $_POST['projectStaffId'];
             $role = $_POST['role'];
 
             if (!in_array($role,[1,2,3,4,5])) {
-                $this->returnError('Invalid role value');
+                ControllerHelper::returnError('Invalid role value');
             }
 
             $projectStaff = ProjectStaff::model()->findByPk($projectStaffId);
@@ -145,7 +146,7 @@ class ProjectController extends Controller
                 if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
                     // If the current staff is the only leader of the project
                     if (ProjectStaff::leaderCount($projectStaff->projectId) == 1) {
-                        $this->returnError('You cannot change you role. A project needs at least one leader.');
+                        ControllerHelper::returnError('You cannot change you role. A project needs at least one leader.');
                     }
                     $projectStaff->role = $role;
                     if ($projectStaff->save()) {
@@ -158,15 +159,15 @@ class ProjectController extends Controller
                             ));
                             Yii::app()->end();
                         }
-                        $this->returnSuccess();
+                        ControllerHelper::returnSuccess();
                     } else {
-                        $this->returnError('Some error prevents staff from being changed');
+                        ControllerHelper::returnError('Some error prevents staff from being changed');
                     }
                 } else {
-                    $this->returnError('You don\'t have permission to perform this task');
+                    ControllerHelper::returnError('You don\'t have permission to perform this task');
                 }
             } else {
-                $this->returnError('Record not found');
+                ControllerHelper::returnError('Record not found');
             }
 	}
 
@@ -178,18 +179,18 @@ class ProjectController extends Controller
 	public function actionChangeApplicationStatus()
 	{
             if (!(isset($_POST['stdAppIds']) && isset($_POST['status']))) {
-                $this->returnError('Invalid request');
+                ControllerHelper::returnError('Invalid request');
             }
             
             $stdAppIds = $_POST['stdAppIds'];
             $status = $_POST['status'];
 
             if (!in_array($status,[0,1,2,3])) {
-                $this->returnError('Invalid status value');
+                ControllerHelper::returnError('Invalid status value');
             }
 
             if (!is_array($stdAppIds)) {
-                $this->returnError('Invalid student application IDs');
+                ControllerHelper::returnError('Invalid student application IDs');
             }
             
             // Get the current Project's model
@@ -215,7 +216,7 @@ class ProjectController extends Controller
                     }
                 }
                 if (count($errorIDs) == 0) {
-                    $this->returnSuccess();
+                    ControllerHelper::returnSuccess();
                 } else {
                     header('Content-type: application/json');
                     echo CJSON::encode(array(
@@ -225,13 +226,13 @@ class ProjectController extends Controller
                     ));
                 }
             } else {
-                $this->returnError('You don\'t have permission to perform this task');
+                ControllerHelper::returnError('You don\'t have permission to perform this task');
             }
 	}
         
         public function actionAddStaff() {
             if (!(isset($_POST['projectId']) && isset($_POST['staffId']) && isset($_POST['role']))) {
-                $this->returnError('Invalid request');
+                ControllerHelper::returnError('Invalid request');
             }
             
             $staffId = $_POST['staffId'];
@@ -256,22 +257,22 @@ class ProjectController extends Controller
                                 ),true),
                             ));
                         } else {
-                            $this->returnError('Cannot add staff to project');
+                            ControllerHelper::returnError('Cannot add staff to project');
                         }
                     } catch (CException $e) {
-                        $this->returnError($e->getMessage());
+                        ControllerHelper::returnError($e->getMessage());
                     }
                 } else {
-                    $this->returnError('You don\'t have permission to perform this task');
+                    ControllerHelper::returnError('You don\'t have permission to perform this task');
                 }
             } else {
-                $this->returnError('Invalid project ID');
+                ControllerHelper::returnError('Invalid project ID');
             }
         }
         
         public function actionRemoveStaff() {
             if (!isset($_POST['prjStaffId'])) {
-                $this->returnError('Invalid request');
+                ControllerHelper::returnError('Invalid request');
             }
             $prjStaffId = $_POST['prjStaffId'];
             $projectStaff = ProjectStaff::model()->findByPk($prjStaffId);
@@ -284,7 +285,7 @@ class ProjectController extends Controller
                     $leaderCount = ProjectStaff::leaderCount($projectStaff->projectId);
                     // If that leader is the current staff, which is the only project leader left
                     if ($leaderCount == 1) {
-                        $this->returnError('You can not remove yourself from this project. A project need to have at least one leader.');
+                        ControllerHelper::returnError('You can not remove yourself from this project. A project need to have at least one leader.');
                     } 
                 }
                 if ($projectStaff->delete()) {
@@ -297,34 +298,13 @@ class ProjectController extends Controller
                         ));
                         Yii::app()->end();
                     }
-                    $this->returnSuccess();
+                    ControllerHelper::returnSuccess();
                 } else {
-                    $this->returnError('Some error prevents staff from being removed');
+                    ControllerHelper::returnError('Some error prevents staff from being removed');
                 }
             } else {
-                $this->returnError('You don\'t have permission to perform this task');
+                ControllerHelper::returnError('You don\'t have permission to perform this task');
             }
-        }
-        
-        protected function returnSuccess() {
-            header('Content-type: application/json');
-            echo CJSON::encode(array(
-                'status'=>1,
-            ));
-            Yii::app()->end();
-        }
-        
-        /**
-         * Return a JSON encoded error message
-         * @param string $message
-         */
-        protected function returnError($message) {
-            header('Content-type: application/json');
-            echo CJSON::encode(array(
-                'status'=>0,
-                'message'=>$message ? $message : 'Some error occured. Unable to complete request.',
-            ));
-            Yii::app()->end();
         }
         
         public function actionCreate() {
@@ -392,7 +372,7 @@ class ProjectController extends Controller
          */
         public function actionDelete(){
             if (!isset($_POST['projectId'])) {
-                $this->returnError('Invalid request');
+                ControllerHelper::returnError('Invalid request');
             }
             
             $projectId = $_POST['projectId'];
@@ -401,13 +381,13 @@ class ProjectController extends Controller
                 // Authorize the current user
                 if ($project->getStaffRole(Yii::app()->user->staffId) == Project::ROLE_LEADER) {
                     if ($project->delete()) {
-                        $this->returnSuccess();
+                        ControllerHelper::returnSuccess();
                     } else  
-                        $this->returnError();
+                        ControllerHelper::returnError();
                 } else  
-                    $this->returnError('You don\'t have permission to perform this task');
+                    ControllerHelper::returnError('You don\'t have permission to perform this task');
             } else {
-                $this->returnError('This project cannot be deleted');
+                ControllerHelper::returnError('This project cannot be deleted');
             }
         }
         
@@ -416,17 +396,4 @@ class ProjectController extends Controller
             echo CJSON::encode(Project::getAvailableStaffs($projectId));
         }
         
-        /**
-         * Convert an array of objects to dropdown-list-compatible array
-         * @param array $inpput - The input array
-         * @param string $index - Name of the index field
-         * @param string $value - Name of the value field
-         */
-        public static function toDropdownListArray($input,$index,$value) {
-            $array = array();
-            foreach ($input as $item) {
-                $array[$item->$index] = $item->$value;
-            }
-            return $array;
-        }
 }

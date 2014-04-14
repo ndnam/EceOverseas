@@ -2,7 +2,7 @@
 
 class UserController extends Controller {
 
-    public $layout = '//layouts/profile';
+    public $layout = '//layouts/profile_student';
 
     public function accessRules() {
         return array(
@@ -39,7 +39,7 @@ class UserController extends Controller {
                 ));
             } else {
                 /* @var $student Student */
-                $student = UserController::loadStudent();
+                $student = ControllerHelper::loadStudent();
                 switch ($page) {
                     case 'general':
                         //Ajax validation
@@ -189,7 +189,7 @@ class UserController extends Controller {
                             'projectStaffs'=>$projectStaffs,
                         ));
                     } else {
-                        $student = UserController::loadStudent($user->studentId);
+                        $student = ControllerHelper::loadStudent($user->studentId);
                         $this->render('view_student',array(
                             'student'=>$student,
                         ));
@@ -212,17 +212,6 @@ class UserController extends Controller {
         $model = User::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
-        return $model;
-    }
-    
-    public function eagerLoadStudent() {
-        if (isset($_SESSION['Student'])) {
-            $model = $_SESSION['Student'];
-        } else 
-            $model = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers')->findByPk(Yii::app()->user->studentId);
-
-        if($model===null)
-                throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }
     
@@ -264,30 +253,4 @@ class UserController extends Controller {
       );
       }
      */
-    
-    /**
-     * if ($id == null) get student and set to Session
-     * else: just get student
-     * @param integer $id
-     * @return Student
-     */
-    public static function loadStudent($id=null) {
-        /* @var $student Student */
-        $student = null;
-        if ($id) {
-            unset($_SESSION['student']);
-            $setSession = false;
-        } else {
-            $setSession = true;
-            $id = Yii::app()->user->studentId;
-            if (isset($_SESSION['student'])) {
-                $student = $_SESSION['student'];
-            }
-        }
-        if (is_null($student))
-            $student = Student::model()->with('medicalInfo','nextOfKin','studentCcas','pastTrips','familyMembers','user')->findByPk($id);
-        if ($setSession)
-            $_SESSION['student'] = $student;
-        return $student;
-    }
 }

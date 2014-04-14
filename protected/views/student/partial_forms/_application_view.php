@@ -22,5 +22,17 @@ $project = $application->project;
 	<b>Application Status:</b>
 	<?= Dictionary::item(Dictionary::TYPE_APPLICATION_STATUS,$application->status) ?>
 	<br />
-        <a href="javascript:;" id="btnDeleteApp" appId="<?=$application->id?>">Delete</a>
+        
+        <?php 
+        if ($project->status == Project::STATUS_PUBLIC) {
+            $this->widget('bootstrap.widgets.TbButton', array(
+                'label'=>'Delete',
+                'type'=>'danger',
+                'size'=>'mini',
+                'htmlOptions'=>array(
+                    'class'=>'btn-del-app',
+                    'appid'=>$application->id,
+                ),
+            )); 
+        }?>
 </div>

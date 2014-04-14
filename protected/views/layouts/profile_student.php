@@ -1,6 +1,6 @@
 <?php /* @var $this Controller */ 
 
-$student = UserController::loadStudent();
+$student = ControllerHelper::loadStudent();
 $errors = $student->profileErrors;
 $username = Yii::app()->user->username;
 $page = isset($_GET['page']) ? $_GET['page'] : 'general';
@@ -10,7 +10,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/valid
 
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="span3 first">
-	<div id="sidebar" class="well" style="padding: 8px 0; width: 210px">
+	<div id="sidebar-left" class="sidebar well" style="padding: 8px 0; width: 210px">
             <?php
                 $this->widget('bootstrap.widgets.TbMenu', array(
                     'type'=>'list',

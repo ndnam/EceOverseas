@@ -2,6 +2,9 @@
     Created on : Mar 26, 2014, 3:18:19 PM
     Author     : Ndnam
 */
+#page {
+    padding-top: 60px;
+}
 
 select, textarea, input {
     margin-bottom: 0;
@@ -31,16 +34,16 @@ input.error1, input.error2, input.error3  {
     box-shadow:         0px 0px 3px 0px #f00;
 }
 
-#sidebar li.error a {
+.sidebar li.error a {
     background: #FF4D7F;
     color: #fff;
 }
 
-#sidebar li.error.active a {
+.sidebar li.error.active a {
     background: #A4629B;
 }
 
-#sidebar li.error a:hover {
+.sidebar li.error a:hover {
     /*color: #0088CC;*/
     background: #FF4466;
 }

@@ -44,14 +44,20 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
+		array(
+                    'name'=>'id',
+                    'htmlOptions'=>array(
+                        'style'=>'width:25px',
+                    ),
+                ),
 		'name',
 		'city',
 		'country',
-		'created',
-		'modified',
 		array(
 			'class'=>'CButtonColumn',
+                        'htmlOptions'=>array(
+                            'style'=>'width:100px',
+                        ),
 		),
 	),
 )); ?>

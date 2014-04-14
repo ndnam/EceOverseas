@@ -1,7 +1,10 @@
 <?php /* @var $this Controller */ ?>
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="row">
-    <div class="span9">
+    <div class="span3">
+        <?php $this->renderPartial('/layouts/_student_left_sidebar'); ?>
+    </div>
+    <div class="span6">
         <div id="content">
             <?php echo $content; ?>
         </div><!-- content -->
@@ -17,4 +20,5 @@
 	</div><!-- sidebar -->
     </div>
 </div>
-<?php $this->endContent(); ?>
+<?php $this->endContent(); ?><?php
+

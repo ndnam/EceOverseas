@@ -353,6 +353,7 @@ class Student extends ActiveRecord
             $imageType = $file->type;
             $tempSrc = $file->tempName;
             if (!file_exists($tempSrc)) {
+                $this->$property = null;
                 return false;
             }
             switch(strtolower($imageType)) {

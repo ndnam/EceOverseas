@@ -66,7 +66,7 @@ class StudentController extends Controller {
      * Return list of profile sections that contain errors
      */
     public function actionProfileErrors() {
-        $student = UserController::loadStudent();
+        $student = ControllerHelper::loadStudent();
         header('Content-type: application/json');
         echo CJSON::encode($student->profileErrors);
     }
@@ -296,7 +296,7 @@ class StudentController extends Controller {
      */
     public function actionApply($id) {
         $project = Project::model()->findByPk($id);
-        if ($project->deadlinePassed) {
+        if ($project->status != Project::STATUS_PUBLIC) {
             $this->redirect(array('student/publicProjects'));
         }
         $application = StudentApplication::model()->findByAttributes(array('projectId'=>$id,'studentId'=>Yii::app()->user->studentId));
@@ -344,7 +344,7 @@ class StudentController extends Controller {
         $appliedProjects = Project::getProjectByStudentId(Yii::app()->user->studentId);
         $unappliedProjects = array_diff($publicProjects, $appliedProjects);
         
-        $student = UserController::loadStudent();
+        $student = ControllerHelper::loadStudent();
         $profileIncomplete = count($student->profileErrors) > 0;
                 
         $this->render('public_projects', array(
@@ -368,7 +368,11 @@ class StudentController extends Controller {
      * @param integer $id
      */
     public function actionDeleteApp($id) {
-        StudentApplication::model()->deleteByPk($id);
+        $app = StudentApplication::model()->findByPk($id);
+        // Only allow student to delete application when project status = Public
+        if ($app->project->status == Project::STATUS_PUBLIC) {
+            $app->delete();
+        }
         $this->redirect(array('student/applications'));
     }
 
